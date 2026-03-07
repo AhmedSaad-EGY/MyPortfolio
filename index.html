@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Ahmed Mohammed Saad portfolio. Full-Stack .NET Developer experienced in ASP.NET Core, SQL Server, and modern frontend development.">
+    <title>Ahmed Mohammed Saad | Full-Stack .NET Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    <div class="section-indicator" id="sectionIndicator" aria-live="polite" aria-atomic="true">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        <span id="sectionIndicatorLabel">Home</span>
+    </div>
+    <div class="page-bg" aria-hidden="true">
+        <div class="bg-gradient bg-one"></div>
+        <div class="bg-gradient bg-two"></div>
+        <div class="bg-gradient bg-three"></div>
+    </div>
+    <div class="code-rain-layer bg-noise" id="codeRain" aria-hidden="true"></div>
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <header class="site-header">
+        <a class="brand" href="#home">
+            <i class="fa-solid fa-code brand-icon" aria-hidden="true"></i>
+            <span>Ahmed Mohammed Saad</span>
+        </a>
+        <div class="header-controls">
+            <nav class="site-nav" id="primaryNav">
+                <a href="#home" data-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
+                <a href="#about" data-label="About"><i class="fa-solid fa-user" aria-hidden="true"></i>About</a>
+                <a href="#experience" data-label="Experience"><i class="fa-solid fa-briefcase"
+                        aria-hidden="true"></i>Experience</a>
+                <a href="#now" data-label="Now"><i class="fa-solid fa-satellite-dish" aria-hidden="true"></i>Now</a>
+                <a href="#projects" data-label="Projects"><i class="fa-solid fa-layer-group"
+                        aria-hidden="true"></i>Projects</a>
+                <a href="#contact" data-label="Contact"><i class="fa-solid fa-envelope"
+                        aria-hidden="true"></i>Contact</a>
+            </nav>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark theme">
+                <span class="theme-icon" aria-hidden="true">
+                    <svg class="icon-sun" viewBox="0 0 24 24" focusable="false">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <line x1="12" y1="2" x2="12" y2="5"></line>
+                        <line x1="12" y1="19" x2="12" y2="22"></line>
+                        <line x1="2" y1="12" x2="5" y2="12"></line>
+                        <line x1="19" y1="12" x2="22" y2="12"></line>
+                        <line x1="4.93" y1="4.93" x2="7.05" y2="7.05"></line>
+                        <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"></line>
+                        <line x1="4.93" y1="19.07" x2="7.05" y2="16.95"></line>
+                        <line x1="16.95" y1="7.05" x2="19.07" y2="4.93"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" focusable="false">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+                    </svg>
+                </span>
+                <span class="theme-prefix">Theme:</span>
+                <span id="themeLabel">Dark</span>
+            </button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false"
+                aria-controls="primaryNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero section reveal" id="home" data-animate="animate__fadeInUp" data-animate-duration="900ms">
+            <div class="hero-copy">
+                <p class="kicker">Software Engineer</p>
+                <h2>Full-Stack .NET Developer.</h2>
+                <p class="hero-subtext">
+                    Experienced in ASP.NET Core, SQL Server, RESTful APIs, JWT authentication, and clean architecture,
+                    with frontend implementation using Angular and Vue.js.
+                </p>
+                <div class="hero-actions">
+                    <a class="button button-primary" href="#projects">
+                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                        <span>View Projects</span>
+                    </a>
+                    <a class="button button-secondary" href="#contact">
+                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                        <span>Contact Me</span>
+                    </a>
+                    <a class="button button-secondary"
+                        href="https://drive.google.com/file/d/1bAhfAU3XxhW_ZlCcZTpd6_vbgPUcgaQ4/view" target="_blank"
+                        rel="noopener noreferrer">
+                        <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                        <span>View my resume</span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-card reveal" data-animate="animate__zoomIn" data-animate-delay="120ms"
+                data-animate-duration="800ms">
+                <p class="hero-card-title">Current Focus</p>
+                <ul>
+                    <li>ASP.NET Core Web APIs and MVC</li>
+                    <li>SQL Server and ERD-driven database design</li>
+                    <li>Secure auth with JWT and role-based access</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section reveal" id="about" data-animate="animate__fadeInUp" data-animate-duration="850ms">
+            <div class="section-heading">
+                <p class="kicker">About</p>
+                <h2>Who I Am</h2>
+            </div>
+            <div class="about-panel">
+                <p>
+                    I am Ahmed Mohammed Saad, a Full-Stack .NET Developer with practical experience in designing
+                    complete systems from ERD modeling to implementation.
+                    I focus on scalable backend architecture, relational database engineering, and building integrated
+                    frontend experiences.
+                </p>
+                <div class="skill-chips">
+                    <span>HTML5</span>
+                    <span>CSS3</span>
+                    <span>JavaScript</span>
+                    <span>Bootstrap 5</span>
+                    <span>Angular</span>
+                    <span>Vue.js</span>
+                    <span>C#</span>
+                    <span>.NET Core</span>
+                    <span>ASP.NET Core</span>
+                    <span>ASP.NET Web APIs</span>
+                    <span>ASP.NET MVC</span>
+                    <span>Entity Framework Core</span>
+                    <span>LINQ</span>
+                    <span>RESTful APIs</span>
+                    <span>JWT</span>
+                    <span>Clean Architecture</span>
+                    <span>SQL Server</span>
+                    <span>ERD Modeling</span>
+                </div>
+            </div>
+            <div class="about-meta">
+                <article class="meta-card">
+                    <h3>Education</h3>
+                    <p>Bachelor of Computers and Information (Computer Science), Zagazig University.</p>
+                    <p>September 2017 - July 2021</p>
+                </article>
+                <article class="meta-card">
+                    <h3>Languages</h3>
+                    <p>Arabic (Native)</p>
+                    <p>English (Proficient)</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section reveal" id="experience" data-animate="animate__fadeInUp" data-animate-duration="850ms">
+            <div class="section-heading">
+                <p class="kicker">Experience</p>
+                <h2>Professional Experience</h2>
+            </div>
+            <article class="experience-card">
+                <div class="experience-head">
+                    <h3>Full-Stack .NET Web Developer</h3>
+                    <p>Digital Egypt Pioneers Initiative (DEPI), Egypt</p>
+                    <p>October 2025 - Present</p>
+                </div>
+                <ul class="experience-list">
+                    <li>Designed and developed RESTful APIs using ASP.NET Core and Entity Framework Core.</li>
+                    <li>Applied Clean Architecture to separate business logic, infrastructure, and presentation layers.
+                    </li>
+                    <li>Implemented secure authentication and authorization using JWT.</li>
+                    <li>Designed normalized SQL Server databases with proper relationships and constraints.</li>
+                    <li>Built and integrated Angular frontend features with backend APIs.</li>
+                    <li>Led team collaboration and coordinated backend-frontend integration.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="section reveal now-section" id="now" data-animate="animate__fadeInUp"
+            data-animate-duration="850ms">
+            <div class="section-heading">
+                <p class="kicker">Now</p>
+                <h2>Current Availability</h2>
+            </div>
+            <div class="now-grid">
+                <article class="now-card now-status">
+                    <p class="now-chip"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Open To Work</p>
+                    <h3>Available for Full-Stack .NET roles and backend-focused freelance projects.</h3>
+                    <p>
+                        I'm currently working on my graduation project from the Digital Egypt Pioneers Initiative
+                        (DEPI). The project is called (Saiyad), a smart SaaS platform that connects fishermen with
+                        customers, bait shops, boat rentals, and seafood traders. It also includes an auction system
+                        that links traders directly with restaurants, helping reduce market monopolies and giving small
+                        traders a fair opportunity to compete in auctions.</p>
+                    <div class="now-meta">
+                        <span><i class="fa-regular fa-clock" aria-hidden="true"></i>Start in 2-3 weeks</span>
+                        <span><i class="fa-solid fa-earth-africa" aria-hidden="true"></i>Remote or hybrid</span>
+                        <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Egypt (GMT+2)</span>
+                    </div>
+                </article>
+
+                <article class="now-card">
+                    <h3>Current Focus</h3>
+                    <ul class="now-list">
+                        <li>Clean Architecture in ASP.NET Core</li>
+                        <li>JWT security and role-based permissions</li>
+                        <li>Performance tuning in SQL Server</li>
+                    </ul>
+                </article>
+
+                <article class="now-card">
+                    <h3>Preferred Work</h3>
+                    <ul class="now-list">
+                        <li>Backend/API engineering</li>
+                        <li>Full-stack .NET products</li>
+                        <li>System design and database modeling</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="section reveal" id="projects" data-animate="animate__fadeInUp" data-animate-duration="850ms">
+            <div class="section-heading">
+                <p class="kicker">Portfolio</p>
+                <h2>Featured Projects</h2>
+            </div>
+            <div class="projects-grid" id="projectsGrid"></div>
+        </section>
+
+        <section class="section reveal" id="contact" data-animate="animate__fadeInUp" data-animate-duration="850ms">
+            <div class="section-heading">
+                <p class="kicker">Let&apos;s Work</p>
+                <h2>Contact Me</h2>
+            </div>
+            <div class="contact-layout">
+                <div class="contact-info">
+                    <p>Open to software engineering and full-stack .NET opportunities. Reach out for collaboration or
+                        hiring discussions.</p>
+                    <div class="contact-actions">
+                        <a class="contact-action button button-secondary" href="mailto:ahmedmohammedsaad01@gmail.com"
+                            target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-envelope"
+                                aria-hidden="true"></i><span>Email Me</span></a>
+                        <a class="contact-action button button-secondary" href="https://wa.link/rm627m" target="_blank"
+                            rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"
+                                aria-hidden="true"></i><span>WhatsApp</span></a>
+                        <a class="contact-action button button-secondary"
+                            href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
+                            rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"
+                                aria-hidden="true"></i><span>LinkedIn</span></a>
+                        <a class="contact-action button button-secondary" href="https://github.com/AhmedSaad-EGY"
+                            target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"
+                                aria-hidden="true"></i><span>GitHub</span></a>
+                        <a class="contact-action button button-secondary"
+                            href="https://drive.google.com/file/d/1bAhfAU3XxhW_ZlCcZTpd6_vbgPUcgaQ4/view"
+                            target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-file-lines"
+                                aria-hidden="true"></i><span>View my resume</span></a>
+                    </div>
+                    <p>Zagazig, Sharqia, Egypt | Zip Code: 44511</p>
+                </div>
+                <form id="contactForm" class="contact-form" data-contact-email="ahmedmohammedsaad01@gmail.com">
+                    <label for="name">Name</label>
+                    <input id="name" name="name" type="text" required>
+
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" required>
+
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+
+                    <button type="submit" class="button button-primary">
+                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                        <span>Send Message</span>
+                    </button>
+                    <p id="formStatus" class="form-status" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span id="year"></span> Ahmed M. Saad. All rights reserved.</p>
+    </footer>
+
+    <script src="projects.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

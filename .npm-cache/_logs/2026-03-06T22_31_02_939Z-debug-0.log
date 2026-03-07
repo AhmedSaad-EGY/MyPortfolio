@@ -1,0 +1,251 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.6.2
+2 info using node@v24.13.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:F:\Portfolio\.npmrc
+5 silly config load:file:C:\Users\pcc\.npmrc
+6 silly config load:file:C:\Users\pcc\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install
+8 verbose argv "install" "--cache" ".npm-cache"
+9 verbose logfile logs-max:10 dir:F:\Portfolio\.npm-cache\_logs\2026-03-06T22_31_02_939Z-
+10 verbose logfile F:\Portfolio\.npm-cache\_logs\2026-03-06T22_31_02_939Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:2348810240 maxSize:587202560 maxEntrySize:293601280
+13 silly idealTree buildDeps
+14 silly fetch manifest pdf-parse@^2.4.5
+15 silly packumentCache full:https://registry.npmjs.org/pdf-parse cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/pdf-parse 1305ms (cache revalidated)
+17 silly packumentCache full:https://registry.npmjs.org/pdf-parse set size:182111 disposed:false
+18 silly placeDep ROOT pdf-parse@2.4.5 OK for:  want: ^2.4.5
+19 silly fetch manifest pdfjs-dist@5.4.296
+20 silly packumentCache full:https://registry.npmjs.org/pdfjs-dist cache-miss
+21 silly fetch manifest @napi-rs/canvas@0.1.80
+22 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas cache-miss
+23 http fetch GET 200 https://registry.npmjs.org/pdfjs-dist 368ms (cache revalidated)
+24 silly packumentCache full:https://registry.npmjs.org/pdfjs-dist set size:2090403 disposed:false
+25 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas 1028ms (cache revalidated)
+26 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas set size:546172 disposed:false
+27 silly placeDep ROOT @napi-rs/canvas@0.1.80 OK for: pdf-parse@2.4.5 want: 0.1.80
+28 silly placeDep ROOT pdfjs-dist@5.4.296 OK for: pdf-parse@2.4.5 want: 5.4.296
+29 silly fetch manifest @napi-rs/canvas-darwin-x64@0.1.80
+30 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-x64 cache-miss
+31 silly fetch manifest @napi-rs/canvas-darwin-arm64@0.1.80
+32 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-arm64 cache-miss
+33 silly fetch manifest @napi-rs/canvas-android-arm64@0.1.80
+34 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-android-arm64 cache-miss
+35 silly fetch manifest @napi-rs/canvas-linux-x64-gnu@0.1.80
+36 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-gnu cache-miss
+37 silly fetch manifest @napi-rs/canvas-linux-x64-musl@0.1.80
+38 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-musl cache-miss
+39 silly fetch manifest @napi-rs/canvas-win32-x64-msvc@0.1.80
+40 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-win32-x64-msvc cache-miss
+41 silly fetch manifest @napi-rs/canvas-linux-arm64-gnu@0.1.80
+42 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-gnu cache-miss
+43 silly fetch manifest @napi-rs/canvas-linux-arm64-musl@0.1.80
+44 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-musl cache-miss
+45 silly fetch manifest @napi-rs/canvas-linux-riscv64-gnu@0.1.80
+46 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-riscv64-gnu cache-miss
+47 silly fetch manifest @napi-rs/canvas-linux-arm-gnueabihf@0.1.80
+48 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm-gnueabihf cache-miss
+49 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-arm64 462ms (cache revalidated)
+50 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-arm64 set size:228081 disposed:false
+51 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm-gnueabihf 677ms (cache revalidated)
+52 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm-gnueabihf set size:232681 disposed:false
+53 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-gnu 718ms (cache revalidated)
+54 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-gnu set size:231097 disposed:false
+55 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-musl 833ms (cache revalidated)
+56 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-musl set size:215969 disposed:false
+57 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-android-arm64 851ms (cache revalidated)
+58 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-android-arm64 set size:228907 disposed:false
+59 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-riscv64-gnu 851ms (cache revalidated)
+60 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-riscv64-gnu set size:68448 disposed:false
+61 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-x64 886ms (cache revalidated)
+62 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-x64 set size:226486 disposed:false
+63 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-gnu 886ms (cache revalidated)
+64 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-gnu set size:232714 disposed:false
+65 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-musl 902ms (cache revalidated)
+66 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-musl set size:231717 disposed:false
+67 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-win32-x64-msvc 1092ms (cache revalidated)
+68 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-win32-x64-msvc set size:229184 disposed:false
+69 silly placeDep ROOT @napi-rs/canvas-android-arm64@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+70 silly placeDep ROOT @napi-rs/canvas-darwin-arm64@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+71 silly placeDep ROOT @napi-rs/canvas-darwin-x64@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+72 silly placeDep ROOT @napi-rs/canvas-linux-arm-gnueabihf@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+73 silly placeDep ROOT @napi-rs/canvas-linux-arm64-gnu@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+74 silly placeDep ROOT @napi-rs/canvas-linux-arm64-musl@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+75 silly placeDep ROOT @napi-rs/canvas-linux-riscv64-gnu@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+76 silly placeDep ROOT @napi-rs/canvas-linux-x64-gnu@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+77 silly placeDep ROOT @napi-rs/canvas-linux-x64-musl@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+78 silly placeDep ROOT @napi-rs/canvas-win32-x64-msvc@0.1.80 OK for: @napi-rs/canvas@0.1.80 want: 0.1.80
+79 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@babel\\helper-string-parser' ]
+80 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@babel\\helper-validator-identifier' ]
+81 silly reify mark retired [
+81 silly reify   'F:\\Portfolio\\node_modules\\@babel\\parser',
+81 silly reify   'F:\\Portfolio\\node_modules\\.bin\\parser',
+81 silly reify   'F:\\Portfolio\\node_modules\\.bin\\parser.cmd',
+81 silly reify   'F:\\Portfolio\\node_modules\\.bin\\parser.ps1'
+81 silly reify ]
+82 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@babel\\types' ]
+83 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@esbuild\\win32-x64' ]
+84 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@jridgewell\\sourcemap-codec' ]
+85 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@rollup\\rollup-win32-x64-gnu' ]
+86 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@rollup\\rollup-win32-x64-msvc' ]
+87 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@types\\estree' ]
+88 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vitejs\\plugin-vue' ]
+89 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\compiler-core' ]
+90 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\compiler-dom' ]
+91 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\compiler-sfc' ]
+92 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\compiler-ssr' ]
+93 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\devtools-api' ]
+94 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\reactivity' ]
+95 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\runtime-core' ]
+96 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\runtime-dom' ]
+97 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\server-renderer' ]
+98 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\@vue\\shared' ]
+99 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\csstype' ]
+100 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\entities' ]
+101 silly reify mark retired [
+101 silly reify   'F:\\Portfolio\\node_modules\\esbuild',
+101 silly reify   'F:\\Portfolio\\node_modules\\.bin\\esbuild',
+101 silly reify   'F:\\Portfolio\\node_modules\\.bin\\esbuild.cmd',
+101 silly reify   'F:\\Portfolio\\node_modules\\.bin\\esbuild.ps1'
+101 silly reify ]
+102 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\estree-walker' ]
+103 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\magic-string' ]
+104 silly reify mark retired [
+104 silly reify   'F:\\Portfolio\\node_modules\\nanoid',
+104 silly reify   'F:\\Portfolio\\node_modules\\.bin\\nanoid',
+104 silly reify   'F:\\Portfolio\\node_modules\\.bin\\nanoid.cmd',
+104 silly reify   'F:\\Portfolio\\node_modules\\.bin\\nanoid.ps1'
+104 silly reify ]
+105 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\picocolors' ]
+106 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\postcss' ]
+107 silly reify mark retired [
+107 silly reify   'F:\\Portfolio\\node_modules\\rollup',
+107 silly reify   'F:\\Portfolio\\node_modules\\.bin\\rollup',
+107 silly reify   'F:\\Portfolio\\node_modules\\.bin\\rollup.cmd',
+107 silly reify   'F:\\Portfolio\\node_modules\\.bin\\rollup.ps1'
+107 silly reify ]
+108 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\source-map-js' ]
+109 silly reify mark retired [
+109 silly reify   'F:\\Portfolio\\node_modules\\vite',
+109 silly reify   'F:\\Portfolio\\node_modules\\.bin\\vite',
+109 silly reify   'F:\\Portfolio\\node_modules\\.bin\\vite.cmd',
+109 silly reify   'F:\\Portfolio\\node_modules\\.bin\\vite.ps1'
+109 silly reify ]
+110 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\vue' ]
+111 silly reify mark retired [ 'F:\\Portfolio\\node_modules\\vue-router' ]
+112 silly reify moves {
+112 silly reify   'F:\\Portfolio\\node_modules\\@babel\\helper-string-parser': 'F:\\Portfolio\\node_modules\\@babel\\.helper-string-parser-GzEbW4NJ',
+112 silly reify   'F:\\Portfolio\\node_modules\\@babel\\helper-validator-identifier': 'F:\\Portfolio\\node_modules\\@babel\\.helper-validator-identifier-UuFUWNJS',
+112 silly reify   'F:\\Portfolio\\node_modules\\@babel\\parser': 'F:\\Portfolio\\node_modules\\@babel\\.parser-Zj4xlnPC',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\parser': 'F:\\Portfolio\\node_modules\\.bin\\.parser-STrO9PsV',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\parser.cmd': 'F:\\Portfolio\\node_modules\\.bin\\.parser.cmd-bpWpddwR',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\parser.ps1': 'F:\\Portfolio\\node_modules\\.bin\\.parser.ps1-DZrFsx6q',
+112 silly reify   'F:\\Portfolio\\node_modules\\@babel\\types': 'F:\\Portfolio\\node_modules\\@babel\\.types-QiYW8Vch',
+112 silly reify   'F:\\Portfolio\\node_modules\\@esbuild\\win32-x64': 'F:\\Portfolio\\node_modules\\@esbuild\\.win32-x64-kYnrMEet',
+112 silly reify   'F:\\Portfolio\\node_modules\\@jridgewell\\sourcemap-codec': 'F:\\Portfolio\\node_modules\\@jridgewell\\.sourcemap-codec-clwRA58G',
+112 silly reify   'F:\\Portfolio\\node_modules\\@rollup\\rollup-win32-x64-gnu': 'F:\\Portfolio\\node_modules\\@rollup\\.rollup-win32-x64-gnu-1hubYph4',
+112 silly reify   'F:\\Portfolio\\node_modules\\@rollup\\rollup-win32-x64-msvc': 'F:\\Portfolio\\node_modules\\@rollup\\.rollup-win32-x64-msvc-YvCXd7P1',
+112 silly reify   'F:\\Portfolio\\node_modules\\@types\\estree': 'F:\\Portfolio\\node_modules\\@types\\.estree-fy8NcBIU',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vitejs\\plugin-vue': 'F:\\Portfolio\\node_modules\\@vitejs\\.plugin-vue-mAKGVcrF',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\compiler-core': 'F:\\Portfolio\\node_modules\\@vue\\.compiler-core-AX4crgyy',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\compiler-dom': 'F:\\Portfolio\\node_modules\\@vue\\.compiler-dom-9jXltAFS',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\compiler-sfc': 'F:\\Portfolio\\node_modules\\@vue\\.compiler-sfc-WKeuhAQO',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\compiler-ssr': 'F:\\Portfolio\\node_modules\\@vue\\.compiler-ssr-K3qBGJdt',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\devtools-api': 'F:\\Portfolio\\node_modules\\@vue\\.devtools-api-hZMUgUAE',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\reactivity': 'F:\\Portfolio\\node_modules\\@vue\\.reactivity-KytPUo5E',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\runtime-core': 'F:\\Portfolio\\node_modules\\@vue\\.runtime-core-AWePqN3X',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\runtime-dom': 'F:\\Portfolio\\node_modules\\@vue\\.runtime-dom-C3vCSoFq',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\server-renderer': 'F:\\Portfolio\\node_modules\\@vue\\.server-renderer-T1TcxX1L',
+112 silly reify   'F:\\Portfolio\\node_modules\\@vue\\shared': 'F:\\Portfolio\\node_modules\\@vue\\.shared-0UOHLKFq',
+112 silly reify   'F:\\Portfolio\\node_modules\\csstype': 'F:\\Portfolio\\node_modules\\.csstype-Sm7qM5h4',
+112 silly reify   'F:\\Portfolio\\node_modules\\entities': 'F:\\Portfolio\\node_modules\\.entities-Uy2bJbyH',
+112 silly reify   'F:\\Portfolio\\node_modules\\esbuild': 'F:\\Portfolio\\node_modules\\.esbuild-a0QGZBd8',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\esbuild': 'F:\\Portfolio\\node_modules\\.bin\\.esbuild-4tnImuq8',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\esbuild.cmd': 'F:\\Portfolio\\node_modules\\.bin\\.esbuild.cmd-ARjfsZOd',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\esbuild.ps1': 'F:\\Portfolio\\node_modules\\.bin\\.esbuild.ps1-VIFztLrg',
+112 silly reify   'F:\\Portfolio\\node_modules\\estree-walker': 'F:\\Portfolio\\node_modules\\.estree-walker-n3QD3CYk',
+112 silly reify   'F:\\Portfolio\\node_modules\\magic-string': 'F:\\Portfolio\\node_modules\\.magic-string-f51zxoUe',
+112 silly reify   'F:\\Portfolio\\node_modules\\nanoid': 'F:\\Portfolio\\node_modules\\.nanoid-a4Fqm5jp',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\nanoid': 'F:\\Portfolio\\node_modules\\.bin\\.nanoid-v8RzGAyr',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\nanoid.cmd': 'F:\\Portfolio\\node_modules\\.bin\\.nanoid.cmd-74XZiUgn',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\nanoid.ps1': 'F:\\Portfolio\\node_modules\\.bin\\.nanoid.ps1-y6xqPxHX',
+112 silly reify   'F:\\Portfolio\\node_modules\\picocolors': 'F:\\Portfolio\\node_modules\\.picocolors-7njmxH5C',
+112 silly reify   'F:\\Portfolio\\node_modules\\postcss': 'F:\\Portfolio\\node_modules\\.postcss-9tF6TI1l',
+112 silly reify   'F:\\Portfolio\\node_modules\\rollup': 'F:\\Portfolio\\node_modules\\.rollup-S1xBaKij',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\rollup': 'F:\\Portfolio\\node_modules\\.bin\\.rollup-etKuWIke',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\rollup.cmd': 'F:\\Portfolio\\node_modules\\.bin\\.rollup.cmd-zCvOvgnV',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\rollup.ps1': 'F:\\Portfolio\\node_modules\\.bin\\.rollup.ps1-P0uLsgnx',
+112 silly reify   'F:\\Portfolio\\node_modules\\source-map-js': 'F:\\Portfolio\\node_modules\\.source-map-js-SP6HfLaV',
+112 silly reify   'F:\\Portfolio\\node_modules\\vite': 'F:\\Portfolio\\node_modules\\.vite-ayKPo3No',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\vite': 'F:\\Portfolio\\node_modules\\.bin\\.vite-8pFq1Jbg',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\vite.cmd': 'F:\\Portfolio\\node_modules\\.bin\\.vite.cmd-60q1IYcN',
+112 silly reify   'F:\\Portfolio\\node_modules\\.bin\\vite.ps1': 'F:\\Portfolio\\node_modules\\.bin\\.vite.ps1-AVkdh7Rb',
+112 silly reify   'F:\\Portfolio\\node_modules\\vue': 'F:\\Portfolio\\node_modules\\.vue-n7kmFLst',
+112 silly reify   'F:\\Portfolio\\node_modules\\vue-router': 'F:\\Portfolio\\node_modules\\.vue-router-44wckyit'
+112 silly reify }
+113 silly audit bulk request {
+113 silly audit   'pdf-parse': [ '2.4.5' ],
+113 silly audit   '@napi-rs/canvas': [ '0.1.80' ],
+113 silly audit   'pdfjs-dist': [ '5.4.296' ],
+113 silly audit   '@napi-rs/canvas-android-arm64': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-darwin-arm64': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-darwin-x64': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-linux-arm-gnueabihf': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-linux-arm64-gnu': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-linux-arm64-musl': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-linux-riscv64-gnu': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-linux-x64-gnu': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-linux-x64-musl': [ '0.1.80' ],
+113 silly audit   '@napi-rs/canvas-win32-x64-msvc': [ '0.1.80' ]
+113 silly audit }
+114 http cache @napi-rs/canvas-win32-x64-msvc@https://registry.npmjs.org/@napi-rs/canvas-win32-x64-msvc/-/canvas-win32-x64-msvc-0.1.80.tgz 0ms (cache hit)
+115 http cache @napi-rs/canvas@https://registry.npmjs.org/@napi-rs/canvas/-/canvas-0.1.80.tgz 0ms (cache hit)
+116 http cache pdfjs-dist@https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-5.4.296.tgz 0ms (cache hit)
+117 http cache pdf-parse@https://registry.npmjs.org/pdf-parse/-/pdf-parse-2.4.5.tgz 0ms (cache hit)
+118 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 784ms
+119 silly audit report {}
+120 silly ADD node_modules/@napi-rs/canvas-win32-x64-msvc
+121 silly ADD node_modules/pdfjs-dist
+122 silly ADD node_modules/@napi-rs/canvas
+123 silly ADD node_modules/pdf-parse
+124 silly REMOVE node_modules/vue-router
+125 silly REMOVE node_modules/vue
+126 silly REMOVE node_modules/vite
+127 silly REMOVE node_modules/source-map-js
+128 silly REMOVE node_modules/rollup
+129 silly REMOVE node_modules/postcss
+130 silly REMOVE node_modules/picocolors
+131 silly REMOVE node_modules/nanoid
+132 silly REMOVE node_modules/magic-string
+133 silly REMOVE node_modules/estree-walker
+134 silly REMOVE node_modules/esbuild
+135 silly REMOVE node_modules/entities
+136 silly REMOVE node_modules/csstype
+137 silly REMOVE node_modules/@vue/shared
+138 silly REMOVE node_modules/@vue/server-renderer
+139 silly REMOVE node_modules/@vue/runtime-dom
+140 silly REMOVE node_modules/@vue/runtime-core
+141 silly REMOVE node_modules/@vue/reactivity
+142 silly REMOVE node_modules/@vue/devtools-api
+143 silly REMOVE node_modules/@vue/compiler-ssr
+144 silly REMOVE node_modules/@vue/compiler-sfc
+145 silly REMOVE node_modules/@vue/compiler-dom
+146 silly REMOVE node_modules/@vue/compiler-core
+147 silly REMOVE node_modules/@vitejs/plugin-vue
+148 silly REMOVE node_modules/@types/estree
+149 silly REMOVE node_modules/@rollup/rollup-win32-x64-msvc
+150 silly REMOVE node_modules/@rollup/rollup-win32-x64-gnu
+151 silly REMOVE node_modules/@jridgewell/sourcemap-codec
+152 silly REMOVE node_modules/@esbuild/win32-x64
+153 silly REMOVE node_modules/@babel/types
+154 silly REMOVE node_modules/@babel/parser
+155 silly REMOVE node_modules/@babel/helper-validator-identifier
+156 silly REMOVE node_modules/@babel/helper-string-parser
+157 verbose cwd F:\Portfolio
+158 verbose os Windows_NT 10.0.26200
+159 verbose node v24.13.0
+160 verbose npm  v11.6.2
+161 verbose exit 0
+162 info ok
