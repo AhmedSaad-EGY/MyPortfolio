@@ -94,17 +94,24 @@
             (base ? base.textContent : "") ||
             heading.textContent ||
             "";
+        const variants = String(heading.dataset.texts || "")
+            .split("|")
+            .map(function (text) {
+                return text.trim();
+            })
+            .filter(Boolean);
         const fullText = String(rawText).trim();
-        if (!fullText) {
+        const textList = variants.length ? variants : fullText ? [fullText] : [];
+        if (!textList.length) {
             heading.dataset.typingStarted = "true";
             return;
         }
 
-        heading.dataset.text = fullText;
+        heading.dataset.text = textList[0];
         heading.dataset.typingStarted = "true";
 
         if (base) {
-            base.textContent = fullText;
+            base.textContent = textList[0];
         }
 
         const targetOverlay = overlay || (function () {
@@ -116,26 +123,29 @@
         })();
 
         if (prefersReducedMotion) {
-            targetOverlay.textContent = fullText;
+            targetOverlay.textContent = textList[0];
             return;
         }
 
         const speed = 60;
         const pause = 3000;
         const initialDelay = 600;
+        let phraseIndex = 0;
 
         function runTyping() {
+            const phrase = textList[phraseIndex];
             targetOverlay.textContent = "";
             targetOverlay.classList.add("typing");
 
             let index = 0;
             const intervalId = window.setInterval(function () {
                 index += 1;
-                targetOverlay.textContent = fullText.slice(0, index);
+                targetOverlay.textContent = phrase.slice(0, index);
 
-                if (index >= fullText.length) {
+                if (index >= phrase.length) {
                     window.clearInterval(intervalId);
                     targetOverlay.classList.remove("typing");
+                    phraseIndex = (phraseIndex + 1) % textList.length;
                     window.setTimeout(runTyping, pause);
                 }
             }, speed);
