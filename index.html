@@ -14,6 +14,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,9 +25,9 @@
         <span id="sectionIndicatorLabel">Home</span>
     </div>
     <div class="page-bg" aria-hidden="true">
-        <div class="bg-gradient bg-one"></div>
-        <div class="bg-gradient bg-two"></div>
-        <div class="bg-gradient bg-three"></div>
+        <div class="bg-gradient bg-one" data-parallax="0.18"></div>
+        <div class="bg-gradient bg-two" data-parallax="0.12"></div>
+        <div class="bg-gradient bg-three" data-parallax="0.15"></div>
     </div>
     <div class="code-rain-layer bg-noise" id="codeRain" aria-hidden="true"></div>
     <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
@@ -39,6 +40,7 @@
         </a>
         <div class="header-controls">
             <nav class="site-nav" id="primaryNav">
+                <span class="nav-active-pill" id="navActivePill" aria-hidden="true"></span>
                 <a href="#home" data-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
                 <a href="#about" data-label="About"><i class="fa-solid fa-user" aria-hidden="true"></i>About</a>
                 <a href="#experience" data-label="Experience"><i class="fa-solid fa-briefcase"
@@ -82,30 +84,38 @@
         <section class="hero section reveal" id="home" data-animate="animate__fadeInUp" data-animate-duration="900ms">
             <div class="hero-copy">
                 <p class="kicker">Software Engineer</p>
-                <h2>Full-Stack .NET Developer.</h2>
+                <h2 class="hero-title" data-typing="true" data-text="Full-Stack .NET Developer.">
+                    <span class="typing-base">Full-Stack .NET Developer.</span>
+                    <span class="typing-overlay" aria-hidden="true"></span>
+                </h2>
                 <p class="hero-subtext">
                     Experienced in ASP.NET Core, SQL Server, RESTful APIs, JWT authentication, and clean architecture,
                     with frontend implementation using Angular and Vue.js.
                 </p>
                 <div class="hero-actions">
-                    <a class="button button-primary" href="#projects">
+                    <a class="button button-primary" href="#projects" data-stagger>
                         <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
                         <span>View Projects</span>
                     </a>
-                    <a class="button button-secondary" href="#contact">
+                    <a class="button button-secondary" href="#contact" data-stagger>
                         <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
                         <span>Contact Me</span>
                     </a>
                     <a class="button button-secondary"
                         href="https://drive.google.com/file/d/1bAhfAU3XxhW_ZlCcZTpd6_vbgPUcgaQ4/view" target="_blank"
-                        rel="noopener noreferrer">
-                        <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+                        rel="noopener noreferrer" data-stagger>
+                        <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
                         <span>View my resume</span>
                     </a>
                 </div>
             </div>
             <div class="hero-card reveal" data-animate="animate__zoomIn" data-animate-delay="120ms"
                 data-animate-duration="800ms">
+                <div class="hero-avatar">
+                    <img src="ahmed.png" alt="Ahmed Mohammed Saad portrait" loading="lazy" decoding="async" width="1024"
+                        height="1166">
+                </div>
+                <p class="hero-name">Ahmed Mohammed Saad</p>
                 <p class="hero-card-title">Current Focus</p>
                 <ul>
                     <li>ASP.NET Core Web APIs and MVC</li>
@@ -118,7 +128,10 @@
         <section class="section reveal" id="about" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">About</p>
-                <h2>Who I Am</h2>
+                <h2>
+                    <span class="typing-base">Who I Am</span>
+                    <span class="typing-overlay" aria-hidden="true"></span>
+                </h2>
             </div>
             <div class="about-panel">
                 <p>
@@ -128,24 +141,44 @@
                     frontend experiences.
                 </p>
                 <div class="skill-chips">
-                    <span>HTML5</span>
-                    <span>CSS3</span>
-                    <span>JavaScript</span>
-                    <span>Bootstrap 5</span>
-                    <span>Angular</span>
-                    <span>Vue.js</span>
-                    <span>C#</span>
-                    <span>.NET Core</span>
-                    <span>ASP.NET Core</span>
-                    <span>ASP.NET Web APIs</span>
-                    <span>ASP.NET MVC</span>
-                    <span>Entity Framework Core</span>
-                    <span>LINQ</span>
-                    <span>RESTful APIs</span>
-                    <span>JWT</span>
-                    <span>Clean Architecture</span>
-                    <span>SQL Server</span>
-                    <span>ERD Modeling</span>
+                    <span data-stagger>HTML5</span>
+                    <span data-stagger>CSS3</span>
+                    <span data-stagger>JavaScript</span>
+                    <span data-stagger>Bootstrap 5</span>
+                    <span data-stagger>Angular</span>
+                    <span data-stagger>Vue.js</span>
+                    <span data-stagger>C#</span>
+                    <span data-stagger>.NET Core</span>
+                    <span data-stagger>ASP.NET Core</span>
+                    <span data-stagger>ASP.NET Web APIs</span>
+                    <span data-stagger>ASP.NET MVC</span>
+                    <span data-stagger>Entity Framework Core</span>
+                    <span data-stagger>LINQ</span>
+                    <span data-stagger>RESTful APIs</span>
+                    <span data-stagger>JWT</span>
+                    <span data-stagger>Clean Architecture</span>
+                    <span data-stagger>SQL Server</span>
+                    <span data-stagger>ERD Modeling</span>
+                </div>
+            </div>
+            <div class="skills-proof">
+                <h3>Skills Proof</h3>
+                <div class="skills-proof-grid">
+                    <article class="proof-card" data-stagger>
+                        <p class="proof-title">Database Architecture</p>
+                        <p class="proof-text">Khidma DB: 63 stored procedures, 26 SQL views, normalized schema.</p>
+                        <a class="proof-link" href="#project-1">See project</a>
+                    </article>
+                    <article class="proof-card" data-stagger>
+                        <p class="proof-title">Frontend Delivery</p>
+                        <p class="proof-text">Landing Page: responsive layout, conversion-focused structure.</p>
+                        <a class="proof-link" href="#project-2">See project</a>
+                    </article>
+                    <article class="proof-card" data-stagger>
+                        <p class="proof-title">SPA Engineering</p>
+                        <p class="proof-text">AS Store: Vue 3 SPA with dynamic catalog and cart workflows.</p>
+                        <a class="proof-link" href="#project-3">See project</a>
+                    </article>
                 </div>
             </div>
             <div class="about-meta">
@@ -156,8 +189,8 @@
                 </article>
                 <article class="meta-card">
                     <h3>Languages</h3>
-                    <p>Arabic (Native)</p>
-                    <p>English (Proficient)</p>
+                    <p>Arabic</p>
+                    <p>English</p>
                 </article>
             </div>
         </section>
@@ -165,7 +198,10 @@
         <section class="section reveal" id="experience" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Experience</p>
-                <h2>Professional Experience</h2>
+                <h2>
+                    <span class="typing-base">Professional Experience</span>
+                    <span class="typing-overlay" aria-hidden="true"></span>
+                </h2>
             </div>
             <article class="experience-card">
                 <div class="experience-head">
@@ -183,13 +219,30 @@
                     <li>Led team collaboration and coordinated backend-frontend integration.</li>
                 </ul>
             </article>
+            <div class="outcomes-strip">
+                <article class="outcome-card" data-stagger>
+                    <p class="outcome-value" data-count="63" data-suffix="+">63+</p>
+                    <p class="outcome-label">Stored procedures delivered</p>
+                </article>
+                <article class="outcome-card" data-stagger>
+                    <p class="outcome-value" data-count="26">26</p>
+                    <p class="outcome-label">SQL views crafted for reporting</p>
+                </article>
+                <article class="outcome-card" data-stagger>
+                    <p class="outcome-value" data-count="3">3</p>
+                    <p class="outcome-label">End-to-end projects shipped</p>
+                </article>
+            </div>
         </section>
 
         <section class="section reveal now-section" id="now" data-animate="animate__fadeInUp"
             data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Now</p>
-                <h2>Current Availability</h2>
+                <h2>
+                    <span class="typing-base">Current Availability</span>
+                    <span class="typing-overlay" aria-hidden="true"></span>
+                </h2>
             </div>
             <div class="now-grid">
                 <article class="now-card now-status">
@@ -231,15 +284,21 @@
         <section class="section reveal" id="projects" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Portfolio</p>
-                <h2>Featured Projects</h2>
+                <h2>
+                    <span class="typing-base">Featured Projects</span>
+                    <span class="typing-overlay" aria-hidden="true"></span>
+                </h2>
             </div>
-            <div class="projects-grid" id="projectsGrid"></div>
+            <div class="projects-grid" id="projectsGrid" data-stagger></div>
         </section>
 
         <section class="section reveal" id="contact" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Let&apos;s Work</p>
-                <h2>Contact Me</h2>
+                <h2>
+                    <span class="typing-base">Contact Me</span>
+                    <span class="typing-overlay" aria-hidden="true"></span>
+                </h2>
             </div>
             <div class="contact-layout">
                 <div class="contact-info">
@@ -287,8 +346,36 @@
     </main>
 
     <footer class="site-footer">
-        <p>&copy; <span id="year"></span> Ahmed M. Saad. All rights reserved.</p>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <p class="footer-name">Ahmed Mohammed12 Saad</p>
+                <p class="footer-tagline">Full-Stack .NET Developer</p>
+            </div>
+            <div class="footer-links">
+                <a href="mailto:ahmedmohammedsaad01@gmail.com">Email</a>
+                <a href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
+                    rel="noopener noreferrer">LinkedIn</a>
+                <a href="https://github.com/AhmedSaad-EGY" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            </div>
+            <p class="footer-copy">&copy; <span id="year"></span> Ahmed Mohammed Saad. All rights reserved.</p>
+        </div>
     </footer>
+    <nav class="mobile-actions" aria-label="Quick actions">
+        <a class="mobile-action" href="mailto:ahmedmohammedsaad01@gmail.com">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            <span>Email</span>
+        </a>
+        <a class="mobile-action" href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            <span>WhatsApp</span>
+        </a>
+        <a class="mobile-action" href="https://drive.google.com/file/d/1bAhfAU3XxhW_ZlCcZTpd6_vbgPUcgaQ4/view"
+            target="_blank" rel="noopener noreferrer">
+            <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+            <span>Resume</span>
+        </a>
+    </nav>
 
     <script src="projects.js"></script>
     <script src="main.js"></script>
