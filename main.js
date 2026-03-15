@@ -600,7 +600,7 @@
             root.setAttribute("data-theme", theme);
 
             if (themeLabel) {
-                themeLabel.textContent = theme === "light" ? "Light" : "Dark";
+                themeLabel.textContent = theme === "light" ? "Dark" : "Light";
             }
 
             if (themeToggle) {
@@ -885,6 +885,8 @@
                 "GET",
                 "<div>",
                 "</>",
+                "<span>",
+                "</span>",
                 "function",
                 "import",
                 "export",
