@@ -71,15 +71,6 @@
     --mobile-nav-deep: rgba(236, 243, 255, 0.96);
 }
 
-:root[data-theme="light"] .hero-avatar {
-    background: radial-gradient(circle at 20% 15%, rgba(21, 121, 255, 0.18), transparent 58%),
-        linear-gradient(150deg, rgba(255, 122, 48, 0.18), rgba(255, 255, 255, 0.85)),
-        var(--bg-soft);
-}
-
-:root[data-theme="light"] .hero-avatar::after {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.35));
-}
 
 * {
     box-sizing: border-box;
@@ -743,11 +734,13 @@ h2 {
     aspect-ratio: 1 / 1;
     border-radius: 18px;
     overflow: hidden;
-    border: 1px solid var(--panel-border);
+    border: 4px solid #44d4ff;
     background: none;
     box-shadow: none;
     margin-bottom: 18px;
     position: relative;
+    padding: 0;
+    animation: avatarBorderShift 6s linear infinite;
 }
 
 .hero-avatar::before {
@@ -760,12 +753,28 @@ h2 {
     object-fit: cover;
     display: block;
     filter: none;
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 1;
+    border-radius: inherit;
+    background: var(--bg);
+    transition: opacity 0.4s ease;
 }
 
 .hero-avatar::after {
     content: none;
+}
+
+.hero-avatar .avatar-dark {
+    opacity: 0;
+}
+
+:root[data-theme="dark"] .hero-avatar .avatar-dark {
+    opacity: 1;
+}
+
+:root[data-theme="dark"] .hero-avatar .avatar-light {
+    opacity: 0;
 }
 
 .hero-name {
@@ -1742,6 +1751,30 @@ h2 {
 
     50% {
         transform: translateY(-8px);
+    }
+}
+
+@keyframes avatarBorderShift {
+    0% {
+        border-color: #44d4ff;
+    }
+
+    50% {
+        border-color: #ff9f44;
+    }
+
+    100% {
+        border-color: #69f5c7;
+    }
+}
+
+@keyframes avatarFrameSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
     }
 }
 
