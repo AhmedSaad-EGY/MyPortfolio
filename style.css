@@ -71,16 +71,6 @@
     --mobile-nav-deep: rgba(236, 243, 255, 0.96);
 }
 
-:root[data-theme="light"] .hero-avatar {
-    background: radial-gradient(circle at 20% 15%, rgba(21, 121, 255, 0.18), transparent 58%),
-        linear-gradient(150deg, rgba(255, 122, 48, 0.18), rgba(255, 255, 255, 0.85)),
-        var(--bg-soft);
-}
-
-:root[data-theme="light"] .hero-avatar::after {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.35));
-}
-
 * {
     box-sizing: border-box;
 }
@@ -125,9 +115,11 @@ a {
     transform: scaleX(0);
     transform-origin: left center;
     background: var(--scroll-progress-gradient);
+    background-size: 200% 100%;
     pointer-events: none;
     box-shadow: 0 0 16px rgba(68, 212, 255, 0.3);
     will-change: transform;
+    animation: underlineShift 1s ease-in-out infinite;
     transition: opacity 0.22s ease;
 }
 
@@ -213,20 +205,16 @@ a {
     opacity: var(--noise-opacity);
     overflow: hidden;
     font-family: "Chakra Petch", "Consolas", monospace;
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(0, 0, 0, 0.92) 14%,
-        rgba(0, 0, 0, 0.96) 78%,
-        transparent 100%
-    );
-    mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(0, 0, 0, 0.92) 14%,
-        rgba(0, 0, 0, 0.96) 78%,
-        transparent 100%
-    );
+    -webkit-mask-image: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(0, 0, 0, 0.92) 14%,
+            rgba(0, 0, 0, 0.96) 78%,
+            transparent 100%);
+    mask-image: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(0, 0, 0, 0.92) 14%,
+            rgba(0, 0, 0, 0.96) 78%,
+            transparent 100%);
 }
 
 .bg-noise::before {
@@ -346,6 +334,10 @@ body.cursor-hover .cursor-ring {
 
 .brand span {
     white-space: nowrap;
+}
+
+.brand-short {
+    display: none;
 }
 
 .brand-icon {
@@ -498,23 +490,23 @@ body.cursor-hover .cursor-ring {
 }
 
 .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+.icon-moon {
+    opacity: 0;
+    transform: rotate(70deg) scale(0.45);
+}
+
+:root[data-theme="light"] .icon-sun {
     opacity: 0;
     transform: rotate(-70deg) scale(0.45);
 }
 
-.icon-moon {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-}
-
-:root[data-theme="light"] .icon-sun {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-}
-
 :root[data-theme="light"] .icon-moon {
-    opacity: 0;
-    transform: rotate(70deg) scale(0.45);
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
 }
 
 .theme-toggle:hover .theme-icon svg {
@@ -571,12 +563,10 @@ main {
         position: absolute;
         inset: 12px -8px;
         border-radius: 28px;
-        background: linear-gradient(
-            120deg,
-            rgba(68, 212, 255, 0.1),
-            rgba(255, 159, 68, 0.08),
-            transparent 65%
-        );
+        background: linear-gradient(120deg,
+                rgba(68, 212, 255, 0.1),
+                rgba(255, 159, 68, 0.08),
+                transparent 65%);
         opacity: 0;
         transform: translateY(6px);
         transition: opacity 0.3s ease, transform 0.3s ease;
@@ -584,7 +574,7 @@ main {
         z-index: 0;
     }
 
-    .section > * {
+    .section>* {
         position: relative;
         z-index: 1;
     }
@@ -644,7 +634,7 @@ h2 {
     border-radius: 999px;
     background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--success));
     background-size: 200% 100%;
-    animation: underlineShift 6s ease-in-out infinite;
+    animation: underlineShift 3s ease-in-out infinite;
 }
 
 .section-heading {
@@ -667,7 +657,7 @@ h2 {
     border-radius: 999px;
     background: linear-gradient(90deg, var(--accent-2), var(--accent), var(--success));
     background-size: 200% 100%;
-    animation: underlineShift 6s ease-in-out infinite;
+    animation: underlineShift 3s ease-in-out infinite;
 }
 
 .hero {
@@ -745,31 +735,10 @@ h2 {
     aspect-ratio: 1 / 1;
     border-radius: 18px;
     overflow: hidden;
-    border: 1px solid var(--panel-border);
-    background: radial-gradient(circle at 20% 15%, rgba(68, 212, 255, 0.25), transparent 58%),
-        linear-gradient(150deg, rgba(255, 159, 68, 0.22), rgba(8, 13, 24, 0.85)),
-        var(--bg-soft);
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+    border: 4px solid #44d4ff;
     margin-bottom: 18px;
     position: relative;
-}
-
-.hero-avatar::before {
-    content: "";
-    position: absolute;
-    inset: -10px;
-    border-radius: 24px;
-    background: conic-gradient(
-        from 120deg,
-        rgba(68, 212, 255, 0.35),
-        rgba(255, 159, 68, 0.3),
-        rgba(105, 245, 199, 0.35),
-        rgba(68, 212, 255, 0.35)
-    );
-    opacity: 0.55;
-    filter: blur(14px);
-    z-index: 0;
-    pointer-events: none;
+    animation: avatarBorderShift 1s linear infinite;
 }
 
 .hero-avatar img {
@@ -777,18 +746,25 @@ h2 {
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: saturate(0.92) contrast(1.05);
-    position: relative;
-    z-index: 1;
-}
-
-.hero-avatar::after {
-    content: "";
+    filter: none;
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(8, 13, 24, 0.08), var(--image-overlay));
-    pointer-events: none;
-    z-index: 2;
+    z-index: 1;
+    border-radius: inherit;
+    background: var(--bg);
+    transition: opacity 0.4s ease;
+}
+
+.hero-avatar .avatar-dark {
+    opacity: 0;
+}
+
+:root[data-theme="dark"] .hero-avatar .avatar-dark {
+    opacity: 1;
+}
+
+:root[data-theme="dark"] .hero-avatar .avatar-light {
+    opacity: 0;
 }
 
 .hero-name {
@@ -922,6 +898,40 @@ h2 {
 
 .proof-link:hover {
     color: var(--accent);
+}
+
+.project-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 32px;
+    justify-content: center;
+}
+
+.filter-btn {
+    background: var(--bg-soft);
+    border: 1px solid var(--panel-border);
+    color: var(--muted);
+    padding: 8px 22px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--accent-2);
+    color: var(--text);
+    background: var(--btn-secondary-hover-bg);
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: var(--accent-2);
+    border-color: var(--accent-2);
+    color: var(--bg);
+    box-shadow: 0 8px 24px rgba(68, 212, 255, 0.25);
 }
 
 .projects-grid {
@@ -1092,12 +1102,10 @@ h2 {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0.14),
-        rgba(255, 255, 255, 0.02),
-        transparent 60%
-    );
+    background: linear-gradient(120deg,
+            rgba(255, 255, 255, 0.14),
+            rgba(255, 255, 255, 0.02),
+            transparent 60%);
     opacity: 0;
     transition: opacity 0.4s ease, transform 0.4s ease;
     transform: translateX(-12%);
@@ -1109,15 +1117,6 @@ h2 {
     transform: translateX(8%);
 }
 
-.project-card,
-.now-card,
-.meta-card,
-.proof-card,
-.outcome-card {
-    position: relative;
-    overflow: hidden;
-}
-
 .now-card::after,
 .meta-card::after,
 .proof-card::after,
@@ -1125,18 +1124,17 @@ h2 {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0.14),
-        rgba(255, 255, 255, 0.02),
-        transparent 60%
-    );
+    background: linear-gradient(120deg,
+            rgba(255, 255, 255, 0.14),
+            rgba(255, 255, 255, 0.02),
+            transparent 60%);
     opacity: 0;
     transition: opacity 0.4s ease, transform 0.4s ease;
     transform: translateX(-12%);
     pointer-events: none;
 }
 
+.project-card:hover::after,
 .now-card:hover::after,
 .meta-card:hover::after,
 .proof-card:hover::after,
@@ -1166,12 +1164,10 @@ h2 {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0.18),
-        rgba(255, 255, 255, 0)
-    );
+    background: linear-gradient(120deg,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0.18),
+            rgba(255, 255, 255, 0));
     transform: translateX(-120%);
     opacity: 0;
     pointer-events: none;
@@ -1374,11 +1370,9 @@ h2 {
     position: absolute;
     inset: -2px;
     border-radius: 14px;
-    background: radial-gradient(
-        circle at var(--focus-x, 50%) var(--focus-y, 50%),
-        rgba(68, 212, 255, 0.35),
-        transparent 60%
-    );
+    background: radial-gradient(circle at var(--focus-x, 50%) var(--focus-y, 50%),
+            rgba(68, 212, 255, 0.35),
+            transparent 60%);
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
@@ -1386,25 +1380,6 @@ h2 {
 }
 
 .contact-form .field-glow.active {
-    opacity: 1;
-}
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: 14px;
-    background: radial-gradient(
-        circle at var(--focus-x, 50%) var(--focus-y, 50%),
-        rgba(68, 212, 255, 0.35),
-        transparent 60%
-    );
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.contact-form input.focus-glow::after,
-.contact-form textarea.focus-glow::after {
     opacity: 1;
 }
 
@@ -1624,19 +1599,20 @@ h2 {
     transform: translateY(0);
 }
 
-.stagger-in {
+[data-stagger] {
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.5s ease, transform 0.5s ease;
     transition-delay: var(--stagger-delay, 0ms);
 }
 
-.stagger-in.stagger-in {
+[data-stagger].stagger-in {
     opacity: 1;
     transform: translateY(0);
 }
 
 @keyframes driftA {
+
     0%,
     100% {
         transform: translate3d(0, 0, 0) scale(1);
@@ -1652,6 +1628,7 @@ h2 {
 }
 
 @keyframes driftB {
+
     0%,
     100% {
         transform: translate3d(0, 0, 0) scale(1);
@@ -1667,6 +1644,7 @@ h2 {
 }
 
 @keyframes driftC {
+
     0%,
     100% {
         transform: translate3d(0, 0, 0) scale(1);
@@ -1731,6 +1709,7 @@ h2 {
 }
 
 @keyframes caretBlink {
+
     0%,
     49% {
         opacity: 1;
@@ -1743,6 +1722,7 @@ h2 {
 }
 
 @keyframes underlineShift {
+
     0%,
     100% {
         background-position: 0% 50%;
@@ -1774,6 +1754,7 @@ h2 {
 }
 
 @keyframes heroFloat {
+
     0%,
     100% {
         transform: translateY(0);
@@ -1781,6 +1762,20 @@ h2 {
 
     50% {
         transform: translateY(-8px);
+    }
+}
+
+@keyframes avatarBorderShift {
+    0% {
+        border-color: #44d4ff;
+    }
+
+    50% {
+        border-color: #ff9f44;
+    }
+
+    100% {
+        border-color: #69f5c7;
     }
 }
 
@@ -1809,6 +1804,16 @@ h2 {
 
     .theme-prefix {
         display: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .brand-full {
+        display: none;
+    }
+
+    .brand-short {
+        display: inline;
     }
 }
 
@@ -1904,7 +1909,44 @@ h2 {
     }
 }
 
-@media (hover: none), (pointer: coarse) {
+@media (max-width: 520px) {
+    .site-header {
+        padding: 10px 12px;
+    }
+
+    .brand {
+        min-width: 0;
+    }
+
+    .brand-full {
+        max-width: 42vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-controls {
+        gap: 6px;
+    }
+
+    .theme-toggle {
+        padding: 7px;
+        border-radius: 10px;
+    }
+
+    .theme-toggle .theme-prefix,
+    .theme-toggle #themeLabel {
+        display: none;
+    }
+
+    .menu-toggle {
+        width: 40px;
+        height: 36px;
+    }
+}
+
+@media (hover: none),
+(pointer: coarse) {
+
     .cursor-dot,
     .cursor-ring {
         display: none !important;
@@ -1954,6 +1996,7 @@ h2 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -1961,5 +2004,40 @@ h2 {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+    }
+}
+
+/* Circular spread effect for theme switching */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+    z-index: 1;
+}
+
+::view-transition-new(root) {
+    z-index: 999;
+    animation: theme-spread 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Ensure the old theme stays visible underneath during transition */
+[data-theme='light']::view-transition-old(root) {
+    z-index: 1;
+}
+
+[data-theme='dark']::view-transition-old(root) {
+    z-index: 1;
+}
+
+@keyframes theme-spread {
+    from {
+        clip-path: circle(0 at var(--transition-x) var(--transition-y));
+    }
+
+    to {
+        clip-path: circle(var(--transition-r) at var(--transition-x) var(--transition-y));
     }
 }

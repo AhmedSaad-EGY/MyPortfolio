@@ -8,7 +8,7 @@ const projects = [
         imageWidth: 432,
         imageHeight: 717,
         gitHubLink: "https://github.com/AhmedSaad-EGY/Khidma",
-        tags: ["SQL Server", "ERD", "Stored Procedures", "Views"],
+        tags: ["SQL Server", "Stored Procedures", "Views"],
     },
     {
         id: 2,
