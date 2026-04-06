@@ -1,10 +1,10 @@
 "use strict";
 
 (function () {
+  // --- Configuration & State ---
   const menuToggle = document.getElementById("menuToggle");
   const primaryNav = document.getElementById("primaryNav");
   const navLinks = Array.from(document.querySelectorAll(".site-nav a"));
-  const MOBILE_NAV_BREAKPOINT = 1080;
   const sectionIndicatorLabel = document.getElementById(
     "sectionIndicatorLabel",
   );
@@ -21,19 +21,34 @@
   const cursorRing = document.getElementById("cursorRing");
   const codeRain = document.getElementById("codeRain");
 
+  const MOBILE_NAV_BREAKPOINT = 1080;
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
   const finePointer = window.matchMedia("(pointer: fine)").matches;
 
+  // --- Utilities ---
   if (yearEl) {
     yearEl.textContent = String(new Date().getFullYear());
   }
 
+  function escapeHtml(input) {
+    return String(input).replace(
+      /[&<>"']/g,
+      (m) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[m],
+    );
+  }
+
+  // --- Navigation UI ---
   function closeNavMenu() {
-    if (!menuToggle || !primaryNav) {
-      return;
-    }
+    if (!menuToggle || !primaryNav) return;
 
     primaryNav.classList.remove("open");
     menuToggle.classList.remove("open");
@@ -87,10 +102,9 @@
     });
   }
 
+  // --- Interactive Components ---
   function startHeadingTyping(heading) {
-    if (!heading || heading.dataset.typingStarted === "true") {
-      return;
-    }
+    if (!heading || heading.dataset.typingStarted === "true") return;
 
     const base = heading.querySelector(".typing-base");
     const overlay = heading.querySelector(".typing-overlay");
@@ -101,10 +115,9 @@
       "";
     const variants = String(heading.dataset.texts || "")
       .split("|")
-      .map(function (text) {
-        return text.trim();
-      })
+      .map((t) => t.trim())
       .filter(Boolean);
+
     const fullText = String(rawText).trim();
     const textList = variants.length ? variants : fullText ? [fullText] : [];
     if (!textList.length) {
@@ -115,9 +128,7 @@
     heading.dataset.text = textList[0];
     heading.dataset.typingStarted = "true";
 
-    if (base) {
-      base.textContent = textList[0];
-    }
+    if (base) base.textContent = textList[0];
 
     const targetOverlay =
       overlay ||
@@ -161,14 +172,12 @@
     window.setTimeout(runTyping, initialDelay);
   }
 
+  // --- Reveal System ---
   function applyRevealState(element) {
     element.classList.add("in-view");
-
     const animationName = String(element.dataset.animate || "").trim();
-    if (!animationName) {
-      return;
-    }
 
+    if (!animationName) return;
     element.classList.add("animate__animated", animationName);
 
     const animationDuration = String(
@@ -176,38 +185,27 @@
     ).trim();
     const animationDelay = String(element.dataset.animateDelay || "").trim();
 
-    if (animationDuration) {
+    if (animationDuration)
       element.style.setProperty("--animate-duration", animationDuration);
-    }
-
-    if (animationDelay) {
+    if (animationDelay)
       element.style.setProperty("--animate-delay", animationDelay);
-    }
 
-    const staggerItems = Array.from(element.querySelectorAll("[data-stagger]"));
-    if (staggerItems.length) {
-      staggerItems.forEach(function (item, index) {
-        item.style.setProperty("--stagger-delay", index * 110 + "ms");
-        item.classList.add("stagger-in");
-      });
-    }
+    element.querySelectorAll("[data-stagger]").forEach((item, idx) => {
+      item.style.setProperty("--stagger-delay", idx * 110 + "ms");
+      item.classList.add("stagger-in");
+    });
 
-    const heroTitle = element.querySelector(".hero-title[data-typing]");
-    if (heroTitle) {
-      startHeadingTyping(heroTitle);
-    }
-
-    const heading = element.querySelector(".section-heading h2");
-    if (heading) {
-      startHeadingTyping(heading);
-    }
+    const textReveal = element.querySelector(
+      ".hero-title[data-typing], .section-heading h2",
+    );
+    if (textReveal) startHeadingTyping(textReveal);
   }
 
   const revealObserver =
     "IntersectionObserver" in window
       ? new IntersectionObserver(
-          function (entries, observer) {
-            entries.forEach(function (entry) {
+          (entries, observer) => {
+            entries.forEach((entry) => {
               if (entry.isIntersecting) {
                 applyRevealState(entry.target);
                 observer.unobserve(entry.target);
@@ -227,48 +225,26 @@
       });
       return;
     }
-
-    elements.forEach(function (element) {
-      revealObserver.observe(element);
-    });
+    elements.forEach((el) => revealObserver.observe(el));
   }
 
-  function escapeHtml(input) {
-    return String(input)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/\"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
+  // --- Projects Logic ---
   function normalizeProjects(value) {
-    if (Array.isArray(value)) {
-      return value;
-    }
-
-    if (value && typeof value === "object") {
-      return Object.values(value);
-    }
-
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === "object") return Object.values(value);
     return [];
   }
 
   function buildProjectCard(project, index) {
-    const title = escapeHtml(project.title || "Untitled Project");
-    const description = escapeHtml(
-      project.description || "No description available.",
-    );
+    const title = escapeHtml(project.title || "Project");
+    const description = escapeHtml(project.description || "");
     const image = escapeHtml(project.image || "");
-    const imageWidth = Number(project.imageWidth) || 1280;
-    const imageHeight = Number(project.imageHeight) || 720;
     const gitHubLink = escapeHtml(project.gitHubLink || "#");
     const tags = Array.isArray(project.tags) ? project.tags : [];
     const tagsHtml = tags
-      .map(function (tag) {
-        return "<span>" + escapeHtml(tag) + "</span>";
-      })
+      .map((tag) => `<span>${escapeHtml(tag)}</span>`)
       .join("");
+
     const delay = Math.min(index * 75, 320);
     const animateDelay = Math.min(index * 80, 420) + "ms";
     const animationName =
@@ -284,11 +260,12 @@
                      data-animate="${animationName}"
                      data-animate-duration="760ms"
                      data-animate-delay="${animateDelay}"
+                     data-aos="fade-up"
                      style="transition-delay:${delay}ms"
                      id="${cardId}"
                      data-stagger>
                 <div class="project-image">
-                    <img src="${image}" alt="${title} preview" loading="lazy" decoding="async" width="${imageWidth}" height="${imageHeight}">
+                    <img src="${image}" alt="${title} preview" loading="lazy" decoding="async" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">
                 </div>
                 <div class="project-body">
                     <h3 class="project-title">${title}</h3>
@@ -305,16 +282,12 @@
   }
 
   function renderProjects(filterTag = "All") {
-    if (!projectsGrid) {
-      return;
-    }
+    if (!projectsGrid) return;
 
     let projectData = normalizeProjects(window.projects);
 
     if (filterTag !== "All") {
-      projectData = projectData.filter((p) =>
-        p.tags.some((tag) => tag === filterTag),
-      );
+      projectData = projectData.filter((p) => p.tags.includes(filterTag));
     }
 
     if (!projectData || projectData.length === 0) {
@@ -324,34 +297,28 @@
     }
 
     projectsGrid.innerHTML = projectData
-      .map(function (project, index) {
-        return buildProjectCard(project, index);
-      })
+      .map((p, i) => buildProjectCard(p, i))
       .join("");
 
     setupProjectFilters();
 
-    // Handle Image loading/errors and Tag animations
-    Array.from(projectsGrid.querySelectorAll("img")).forEach(
-      function (imageEl) {
-        imageEl.addEventListener("error", function () {
-          const wrap = imageEl.closest(".project-image");
-          if (wrap)
-            wrap.innerHTML =
-              '<div class="missing-image">Preview unavailable</div>';
-        });
+    // Handle Image loading/errors
+    projectsGrid.querySelectorAll("img").forEach((imageEl) => {
+      imageEl.addEventListener("error", () => {
+        const wrap = imageEl.closest(".project-image");
+        if (wrap)
+          wrap.innerHTML =
+            '<div class="missing-image">Preview unavailable</div>';
+      });
 
-        imageEl.addEventListener("load", function () {
-          const wrap = imageEl.closest(".project-image");
-          if (wrap) {
-            wrap.classList.add("shimmer");
-            window.setTimeout(function () {
-              wrap.classList.remove("shimmer");
-            }, 1300);
-          }
-        });
-      },
-    );
+      imageEl.addEventListener("load", () => {
+        const wrap = imageEl.closest(".project-image");
+        if (wrap) {
+          wrap.classList.add("shimmer");
+          setTimeout(() => wrap.classList.remove("shimmer"), 1300);
+        }
+      });
+    });
 
     Array.from(projectsGrid.querySelectorAll(".project-tags")).forEach(
       function (tagGroup) {
@@ -368,6 +335,7 @@
     );
 
     registerRevealElements(projectsGrid);
+    if (typeof AOS !== "undefined") AOS.refresh();
   }
 
   function setupProjectFilters() {
@@ -430,25 +398,17 @@
 
   function trackActiveSection() {
     const sections = Array.from(document.querySelectorAll("main section[id]"));
-    if (!sections.length || !navLinks.length) {
-      return;
-    }
+    if (!sections.length || !navLinks.length) return;
 
     const linkMap = new Map(
-      navLinks.map(function (link) {
-        return [link.getAttribute("href") || "", link];
-      }),
+      navLinks.map((link) => [link.getAttribute("href") || "", link]),
     );
 
     function setActiveSection(sectionId) {
-      navLinks.forEach(function (link) {
-        link.classList.remove("active");
-      });
-
+      navLinks.forEach((l) => l.classList.remove("active"));
       const activeLink = linkMap.get("#" + sectionId);
-      if (!activeLink) {
-        return;
-      }
+
+      if (!activeLink) return;
 
       activeLink.classList.add("active");
       if (sectionIndicatorLabel) {
@@ -476,16 +436,12 @@
       setActiveSection(sections[0].id);
     }
 
-    if (!("IntersectionObserver" in window)) {
-      return;
-    }
+    if (!("IntersectionObserver" in window)) return;
 
     const sectionObserver = new IntersectionObserver(
       function (entries) {
         const visibleEntries = entries
-          .filter(function (entry) {
-            return entry.isIntersecting;
-          })
+          .filter((e) => e.isIntersecting)
           .sort(function (left, right) {
             return right.intersectionRatio - left.intersectionRatio;
           });
@@ -502,15 +458,12 @@
       },
     );
 
-    sections.forEach(function (section) {
-      sectionObserver.observe(section);
-    });
+    sections.forEach((s) => sectionObserver.observe(s));
   }
 
+  // --- Form & Theme ---
   function setupContactForm() {
-    if (!contactForm || !formStatus) {
-      return;
-    }
+    if (!contactForm || !formStatus) return;
 
     const emailInput = contactForm.querySelector('input[name="email"]');
 
@@ -622,9 +575,9 @@
         return;
       }
 
-      const subject = encodeURIComponent("Portfolio message from " + name);
+      const subject = encodeURIComponent(`Portfolio message from ${name}`);
       const body = encodeURIComponent(
-        "Name: " + name + "\nEmail: " + email + "\n\n" + message,
+        `Name: ${name}\nEmail: ${email}\n\n${message}`,
       );
       window.location.href =
         "mailto:" + targetEmail + "?subject=" + subject + "&body=" + body;
@@ -687,10 +640,7 @@
     }
 
     themeToggle.addEventListener("click", function (event) {
-      const currentTheme =
-        document.documentElement.getAttribute("data-theme") === "light"
-          ? "light"
-          : "dark";
+      const currentTheme = document.documentElement.getAttribute("data-theme");
       const nextTheme = currentTheme === "dark" ? "light" : "dark";
 
       if (!document.startViewTransition || prefersReducedMotion) {
@@ -721,6 +671,7 @@
     });
   }
 
+  // --- Counters & Visual Effects ---
   function setupOutcomeCounters() {
     const counters = Array.from(
       document.querySelectorAll(".outcome-value[data-count]"),
@@ -776,47 +727,30 @@
       return;
     }
 
-    counters.forEach(function (counter) {
-      observer.observe(counter);
-    });
+    counters.forEach((c) => observer.observe(c));
   }
 
   function setupCursorTracker() {
-    if (!cursorDot || !cursorRing) {
+    if (!cursorDot || !cursorRing || !finePointer || prefersReducedMotion)
       return;
-    }
-
-    if (!finePointer || prefersReducedMotion) {
-      return;
-    }
 
     const hoverSelector = "a, button, input, textarea, .project-card";
-    let pointerX = -100;
-    let pointerY = -100;
-    let ringX = -100;
-    let ringY = -100;
+    let pointerX = -100,
+      pointerY = -100;
+    let ringX = -100,
+      ringY = -100;
 
     document.body.classList.add("cursor-ready");
 
     function paintDot() {
-      cursorDot.style.transform =
-        "translate3d(" +
-        pointerX +
-        "px, " +
-        pointerY +
-        "px, 0) translate(-50%, -50%)";
+      cursorDot.style.transform = `translate3d(${pointerX}px, ${pointerY}px, 0) translate(-50%, -50%)`;
     }
 
     function animateRing() {
       ringX += (pointerX - ringX) * 0.18;
       ringY += (pointerY - ringY) * 0.18;
 
-      cursorRing.style.transform =
-        "translate3d(" +
-        ringX +
-        "px, " +
-        ringY +
-        "px, 0) translate(-50%, -50%)";
+      cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
       window.requestAnimationFrame(animateRing);
     }
 
@@ -827,9 +761,7 @@
     });
 
     window.addEventListener("mouseout", function (event) {
-      if (event.relatedTarget || event.toElement) {
-        return;
-      }
+      if (event.relatedTarget || event.toElement) return;
 
       pointerX = -100;
       pointerY = -100;
@@ -960,7 +892,6 @@
         stream.style.animationDelay = (-Math.random() * 22).toFixed(2) + "s";
         fragment.appendChild(stream);
       }
-
       codeRain.appendChild(fragment);
     }
 
@@ -974,14 +905,9 @@
   }
 
   function setupHeroParallax() {
-    if (prefersReducedMotion) {
-      return;
-    }
-
+    if (prefersReducedMotion) return;
     const blobs = Array.from(document.querySelectorAll(".bg-gradient"));
-    if (!blobs.length) {
-      return;
-    }
+    if (!blobs.length) return;
 
     let ticking = false;
 
@@ -994,8 +920,8 @@
         const direction = index % 2 === 0 ? 1 : -1;
         const offsetY = directionMultiplier * speed;
         const offsetX = directionMultiplier * speed * 0.6 * direction;
-        blob.style.setProperty("--parallax-x", offsetX.toFixed(2) + "px");
-        blob.style.setProperty("--parallax-y", offsetY.toFixed(2) + "px");
+        blob.style.setProperty("--parallax-x", `${offsetX.toFixed(2)}px`);
+        blob.style.setProperty("--parallax-y", `${offsetY.toFixed(2)}px`);
       });
 
       ticking = false;
@@ -1019,33 +945,24 @@
     if (prefersReducedMotion || !finePointer) {
       return;
     }
-
     const cards = Array.from(document.querySelectorAll(".project-card"));
-    if (!cards.length) {
-      return;
-    }
+    if (!cards.length) return;
 
     cards.forEach(function (card) {
       let bounds = null;
-      let targetX = 0;
-      let targetY = 0;
-      let currentX = 0;
-      let currentY = 0;
+      let targetX = 0,
+        targetY = 0;
+      let currentX = 0,
+        currentY = 0;
       let rafId = null;
 
-      function updateBounds() {
-        bounds = card.getBoundingClientRect();
-      }
+      const updateBounds = () => (bounds = card.getBoundingClientRect());
 
       function animate() {
         currentX += (targetX - currentX) * 0.15;
         currentY += (targetY - currentY) * 0.15;
-        card.style.transform =
-          "perspective(1200px) rotateX(" +
-          currentX.toFixed(2) +
-          "deg) rotateY(" +
-          currentY.toFixed(2) +
-          "deg) translateY(-6px) scale(1.02)";
+        card.style.transform = `perspective(1200px) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg) translateY(-6px) scale(1.02)`;
+
         rafId = window.requestAnimationFrame(animate);
       }
 
@@ -1053,22 +970,15 @@
         updateBounds();
         targetX = 0;
         targetY = 0;
-        if (!rafId) {
-          rafId = window.requestAnimationFrame(animate);
-        }
+        if (!rafId) rafId = window.requestAnimationFrame(animate);
       });
 
       card.addEventListener("mousemove", function (event) {
-        if (!bounds || bounds.width === 0 || bounds.height === 0) {
-          return;
-        }
-
+        if (!bounds || bounds.width === 0) return;
         const relX = (event.clientX - bounds.left) / bounds.width;
         const relY = (event.clientY - bounds.top) / bounds.height;
-        const tiltY = (relX - 0.5) * 10;
-        const tiltX = (relY - 0.5) * -10;
-        targetX = tiltX;
-        targetY = tiltY;
+        targetY = (relX - 0.5) * 10;
+        targetX = (relY - 0.5) * -10;
       });
 
       card.addEventListener("mouseleave", function () {
@@ -1087,6 +997,60 @@
     });
   }
 
+  function setupSectionNavigation() {
+    const sections = Array.from(document.querySelectorAll("section[id]"));
+    const upBtn = document.getElementById("navUp");
+    const downBtn = document.getElementById("navDown");
+    if (!upBtn || !downBtn || sections.length === 0) return;
+
+    function getCurrentSectionIndex() {
+      const scrollPos = window.scrollY + window.innerHeight / 2;
+      let currentIdx = 0;
+      sections.forEach((section, index) => {
+        if (scrollPos >= section.offsetTop) {
+          currentIdx = index;
+        }
+      });
+      return currentIdx;
+    }
+
+    function updateNavButtons() {
+      const currentIdx = getCurrentSectionIndex();
+      
+      // Hide UP if at first section
+      if (currentIdx === 0) upBtn.classList.add("hidden");
+      else upBtn.classList.remove("hidden");
+
+      // Hide DOWN if at last section
+      if (currentIdx === sections.length - 1) downBtn.classList.add("hidden");
+      else downBtn.classList.remove("hidden");
+    }
+
+    upBtn.addEventListener("click", () => {
+      const currentIdx = getCurrentSectionIndex();
+      if (currentIdx > 0) {
+        window.scrollTo({
+          top: sections[currentIdx - 1].offsetTop,
+          behavior: "smooth"
+        });
+      }
+    });
+
+    downBtn.addEventListener("click", () => {
+      const currentIdx = getCurrentSectionIndex();
+      if (currentIdx < sections.length - 1) {
+        window.scrollTo({
+          top: sections[currentIdx + 1].offsetTop,
+          behavior: "smooth"
+        });
+      }
+    });
+
+    window.addEventListener("scroll", updateNavButtons, { passive: true });
+    updateNavButtons();
+  }
+
+  // --- Init ---
   renderProjects();
   setupScrollProgress();
   trackActiveSection();
@@ -1097,5 +1061,14 @@
   setupOutcomeCounters();
   setupCodeRain();
   setupCursorTracker();
+  setupSectionNavigation();
   registerRevealElements(document);
+
+  if (typeof AOS !== "undefined") {
+    AOS.init({
+      duration: 1200,
+      easing: "ease-in-out",
+      once: true,
+    });
+  }
 })();
