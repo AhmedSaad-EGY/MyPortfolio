@@ -21,7 +21,7 @@ const projects = [
     imageWidth: 435,
     imageHeight: 715,
     gitHubLink: "https://github.com/AhmedSaad-EGY/LandingPage1",
-    liveDemoLink: "https://ahmedsaad-egy.github.io/LandingPage1/",
+    liveDemoLink: "#",
     tags: ["HTML", "CSS", "Bootstrap 5"],
   },
   {
@@ -33,7 +33,7 @@ const projects = [
     imageWidth: 435,
     imageHeight: 724,
     gitHubLink: "https://github.com/AhmedSaad-EGY/AS_Store",
-    liveDemoLink: "https://ahmedsaad-egy.github.io/AS_Store/",
+    liveDemoLink: "#",
     tags: ["Vue.js 3", "Bootstrap 5", "JavaScript"],
   },
   // {

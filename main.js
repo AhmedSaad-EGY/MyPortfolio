@@ -21,6 +21,9 @@
   const cursorRing = document.getElementById("cursorRing");
   const codeRain = document.getElementById("codeRain");
 
+  // Store scroll/resize tasks to run in a unified loop
+  const scrollTasks = [];
+
   const MOBILE_NAV_BREAKPOINT = 1080;
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
@@ -28,6 +31,35 @@
   const finePointer = window.matchMedia("(pointer: fine)").matches;
 
   // --- Utilities ---
+  function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+  // Centralized Scroll Manager using requestAnimationFrame
+  function initScrollManager() {
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          scrollTasks.forEach((task) => task());
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    // Initial run
+    requestAnimationFrame(() => {
+      scrollTasks.forEach((task) => task());
+    });
+  }
+
   if (yearEl) {
     yearEl.textContent = String(new Date().getFullYear());
   }
@@ -240,10 +272,22 @@
     const description = escapeHtml(project.description || "");
     const image = escapeHtml(project.image || "");
     const gitHubLink = escapeHtml(project.gitHubLink || "#");
+    const liveDemoLink =
+      project.liveDemoLink && project.liveDemoLink !== "#"
+        ? escapeHtml(project.liveDemoLink)
+        : null;
+
     const tags = Array.isArray(project.tags) ? project.tags : [];
     const tagsHtml = tags
       .map((tag) => `<span>${escapeHtml(tag)}</span>`)
       .join("");
+
+    const liveBtnHtml = liveDemoLink
+      ? `<a class="link-btn" href="${liveDemoLink}" target="_blank" rel="noopener noreferrer">
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            <span>Demo</span>
+         </a>`
+      : "";
 
     const delay = Math.min(index * 75, 320);
     const animateDelay = Math.min(index * 80, 420) + "ms";
@@ -276,6 +320,7 @@
                             <i class="fa-brands fa-github" aria-hidden="true"></i>
                             <span>GitHub</span>
                         </a>
+                        ${liveBtnHtml}
                     </div>
                 </div>
             </article>`;
@@ -320,20 +365,6 @@
       });
     });
 
-    Array.from(projectsGrid.querySelectorAll(".project-tags")).forEach(
-      function (tagGroup) {
-        const tags = Array.from(tagGroup.querySelectorAll("span"));
-        tags.forEach(function (tag, index) {
-          window.setTimeout(
-            function () {
-              tag.classList.add("tag-in");
-            },
-            120 + index * 80,
-          );
-        });
-      },
-    );
-
     registerRevealElements(projectsGrid);
     if (typeof AOS !== "undefined") AOS.refresh();
   }
@@ -370,8 +401,6 @@
       return;
     }
 
-    let ticking = false;
-
     function updateProgress() {
       const documentHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -379,21 +408,9 @@
         documentHeight > 0 ? Math.min(window.scrollY / documentHeight, 1) : 0;
 
       scrollProgress.style.transform = "scaleX(" + ratio.toFixed(4) + ")";
-      ticking = false;
     }
 
-    function queueUpdate() {
-      if (ticking) {
-        return;
-      }
-
-      ticking = true;
-      window.requestAnimationFrame(updateProgress);
-    }
-
-    window.addEventListener("scroll", queueUpdate, { passive: true });
-    window.addEventListener("resize", queueUpdate);
-    updateProgress();
+    scrollTasks.push(updateProgress);
   }
 
   function trackActiveSection() {
@@ -403,6 +420,23 @@
     const linkMap = new Map(
       navLinks.map((link) => [link.getAttribute("href") || "", link]),
     );
+
+    const upBtn = document.getElementById("navUp");
+    const downBtn = document.getElementById("navDown");
+
+    function updateNavButtons(sectionId) {
+      if (!upBtn || !downBtn) return;
+      const currentIdx = sections.findIndex((s) => s.id === sectionId);
+
+      // Hide UP if at first section
+      if (currentIdx <= 0) upBtn.classList.add("hidden");
+      else upBtn.classList.remove("hidden");
+
+      // Hide DOWN if at last section
+      if (currentIdx === sections.length - 1 || currentIdx === -1)
+        downBtn.classList.add("hidden");
+      else downBtn.classList.remove("hidden");
+    }
 
     function setActiveSection(sectionId) {
       navLinks.forEach((l) => l.classList.remove("active"));
@@ -427,6 +461,8 @@
         navActivePill.style.width = linkRect.width + "px";
         navActivePill.style.opacity = "1";
       }
+
+      updateNavButtons(sectionId);
     }
 
     const initialHash = String(window.location.hash || "").trim();
@@ -544,7 +580,9 @@
       const name = String(formData.get("name") || "").trim();
       const email = String(formData.get("email") || "").trim();
       const message = String(formData.get("message") || "").trim();
-      const targetEmail = String(contactForm.dataset.contactEmail || "").trim();
+      const endpoint = String(
+        contactForm.dataset.formspreeEndpoint || "",
+      ).trim();
       if (emailInput) {
         emailInput.classList.remove("field-invalid");
       }
@@ -567,23 +605,50 @@
         return;
       }
 
-      if (!targetEmail || targetEmail === "your.email@example.com") {
-        setFormStatus(
-          "Update data-contact-email in index.html to activate sending.",
-          "error",
-        );
+      if (!endpoint) {
+        setFormStatus("Form configuration error. Missing endpoint.", "error");
         return;
       }
 
-      const subject = encodeURIComponent(`Portfolio message from ${name}`);
-      const body = encodeURIComponent(
-        `Name: ${name}\nEmail: ${email}\n\n${message}`,
-      );
-      window.location.href =
-        "mailto:" + targetEmail + "?subject=" + subject + "&body=" + body;
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const submitBtnText = submitBtn ? submitBtn.querySelector("span") : null;
+      const originalBtnText = submitBtnText
+        ? submitBtnText.textContent
+        : "Send Message";
 
-      setFormStatus("Opening your email app...", "success");
-      contactForm.reset();
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtnText) submitBtnText.textContent = "Sending...";
+      setFormStatus("Sending message...", "success");
+
+      fetch(endpoint, {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" },
+      })
+        .then((response) => {
+          if (response.ok) {
+            setFormStatus(
+              "Message sent! I'll get back to you soon.",
+              "success",
+            );
+            contactForm.reset();
+          } else {
+            setFormStatus(
+              "Oops! Something went wrong. Please try again.",
+              "error",
+            );
+          }
+        })
+        .catch(() => {
+          setFormStatus(
+            "Connection error. Please check your internet.",
+            "error",
+          );
+        })
+        .finally(() => {
+          if (submitBtn) submitBtn.disabled = false;
+          if (submitBtnText) submitBtnText.textContent = originalBtnText;
+        });
     });
   }
 
@@ -734,7 +799,7 @@
     if (!cursorDot || !cursorRing || !finePointer || prefersReducedMotion)
       return;
 
-    const hoverSelector = "a, button, input, textarea, .project-card";
+    const hoverSelector = "a, button, input, textarea, .project-card, .hero-avatar";
     let pointerX = -100,
       pointerY = -100;
     let ringX = -100,
@@ -909,8 +974,6 @@
     const blobs = Array.from(document.querySelectorAll(".bg-gradient"));
     if (!blobs.length) return;
 
-    let ticking = false;
-
     function updateParallax() {
       const scrollTop = window.scrollY || window.pageYOffset || 0;
       const directionMultiplier = scrollTop * 0.08;
@@ -923,29 +986,16 @@
         blob.style.setProperty("--parallax-x", `${offsetX.toFixed(2)}px`);
         blob.style.setProperty("--parallax-y", `${offsetY.toFixed(2)}px`);
       });
-
-      ticking = false;
     }
 
-    function requestUpdate() {
-      if (ticking) {
-        return;
-      }
-
-      ticking = true;
-      window.requestAnimationFrame(updateParallax);
-    }
-
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
-    updateParallax();
+    scrollTasks.push(updateParallax);
   }
 
   function setupProject3D() {
     if (prefersReducedMotion || !finePointer) {
       return;
     }
-    const cards = Array.from(document.querySelectorAll(".project-card"));
+    const cards = Array.from(document.querySelectorAll(".project-card, .now-card, .meta-card, .proof-card, .outcome-card, .experience-card"));
     if (!cards.length) return;
 
     cards.forEach(function (card) {
@@ -954,6 +1004,10 @@
         targetY = 0;
       let currentX = 0,
         currentY = 0;
+      let targetScale = 1,
+        currentScale = 1;
+      let mouseX = 50,
+        mouseY = 50;
       let rafId = null;
 
       const updateBounds = () => (bounds = card.getBoundingClientRect());
@@ -961,13 +1015,17 @@
       function animate() {
         currentX += (targetX - currentX) * 0.15;
         currentY += (targetY - currentY) * 0.15;
-        card.style.transform = `perspective(1200px) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg) translateY(-6px) scale(1.02)`;
+        currentScale += (targetScale - currentScale) * 0.08;
+        card.style.transform = `perspective(1200px) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg) translateY(-6px) scale(${currentScale.toFixed(3)})`;
+        card.style.setProperty("--mouse-x", `${mouseX.toFixed(2)}%`);
+        card.style.setProperty("--mouse-y", `${mouseY.toFixed(2)}%`);
 
         rafId = window.requestAnimationFrame(animate);
       }
 
       card.addEventListener("mouseenter", function () {
         updateBounds();
+        targetScale = 1.03;
         targetX = 0;
         targetY = 0;
         if (!rafId) rafId = window.requestAnimationFrame(animate);
@@ -979,6 +1037,8 @@
         const relY = (event.clientY - bounds.top) / bounds.height;
         targetY = (relX - 0.5) * 10;
         targetX = (relY - 0.5) * -10;
+        mouseX = relX * 100;
+        mouseY = relY * 100;
       });
 
       card.addEventListener("mouseleave", function () {
@@ -986,6 +1046,8 @@
         targetY = 0;
         currentX = 0;
         currentY = 0;
+        targetScale = 1;
+        currentScale = 1;
         if (rafId) {
           window.cancelAnimationFrame(rafId);
           rafId = null;
@@ -995,6 +1057,58 @@
 
       window.addEventListener("resize", updateBounds);
     });
+  }
+
+  function setupAvatar3D() {
+    if (prefersReducedMotion || !finePointer) return;
+    const avatar = document.querySelector(".hero-avatar");
+    if (!avatar) return;
+
+    let bounds = null;
+    let targetX = 0,
+      targetY = 0;
+    let currentX = 0,
+      currentY = 0;
+    let targetScale = 1,
+      currentScale = 1;
+    let rafId = null;
+
+    const updateBounds = () => { bounds = avatar.getBoundingClientRect(); };
+
+    function animate() {
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      currentScale += (targetScale - currentScale) * 0.06;
+      avatar.style.transform = `perspective(1000px) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg) scale(${currentScale.toFixed(3)})`;
+      rafId = window.requestAnimationFrame(animate);
+    }
+
+    avatar.addEventListener("mouseenter", () => {
+      updateBounds();
+      targetScale = 1.05;
+      avatar.style.transition = "none";
+      if (!rafId) rafId = window.requestAnimationFrame(animate);
+    });
+
+    avatar.addEventListener("mousemove", (e) => {
+      if (!bounds) return;
+      const relX = (e.clientX - bounds.left) / bounds.width;
+      const relY = (e.clientY - bounds.top) / bounds.height;
+      targetY = (relX - 0.5) * 15; 
+      targetX = (relY - 0.5) * -15;
+    });
+
+    avatar.addEventListener("mouseleave", () => {
+      targetX = 0; targetY = 0;
+      currentX = 0; currentY = 0;
+      targetScale = 1;
+      currentScale = 1;
+      if (rafId) { window.cancelAnimationFrame(rafId); rafId = null; }
+      avatar.style.transition = "";
+      avatar.style.transform = "";
+    });
+
+    window.addEventListener("resize", updateBounds);
   }
 
   function setupSectionNavigation() {
@@ -1014,24 +1128,12 @@
       return currentIdx;
     }
 
-    function updateNavButtons() {
-      const currentIdx = getCurrentSectionIndex();
-      
-      // Hide UP if at first section
-      if (currentIdx === 0) upBtn.classList.add("hidden");
-      else upBtn.classList.remove("hidden");
-
-      // Hide DOWN if at last section
-      if (currentIdx === sections.length - 1) downBtn.classList.add("hidden");
-      else downBtn.classList.remove("hidden");
-    }
-
     upBtn.addEventListener("click", () => {
       const currentIdx = getCurrentSectionIndex();
       if (currentIdx > 0) {
         window.scrollTo({
           top: sections[currentIdx - 1].offsetTop,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }
     });
@@ -1041,27 +1143,95 @@
       if (currentIdx < sections.length - 1) {
         window.scrollTo({
           top: sections[currentIdx + 1].offsetTop,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }
     });
+  }
 
-    window.addEventListener("scroll", updateNavButtons, { passive: true });
-    updateNavButtons();
+  function setupBackToTop() {
+    const backToTopBtn = document.getElementById("backToTop");
+    if (!backToTopBtn) return;
+
+    scrollTasks.push(() => {
+      backToTopBtn.classList.toggle("show", window.scrollY > 500);
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+  }
+
+  function setupCopyEmail() {
+    const copyBtn = document.getElementById("copyEmailBtn");
+    if (!copyBtn) return;
+
+    const email = copyBtn.dataset.email;
+    const btnText = copyBtn.querySelector("span");
+    const btnIcon = copyBtn.querySelector("i");
+    const originalText = btnText ? btnText.textContent : "";
+    const originalIconClass = btnIcon ? btnIcon.className : "";
+
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard
+        .writeText(email)
+        .then(() => {
+          copyBtn.classList.add("copy-success");
+          if (btnText) btnText.textContent = "Copied!";
+          if (btnIcon) btnIcon.className = "fa-solid fa-check";
+
+          setTimeout(() => {
+            copyBtn.classList.remove("copy-success");
+            if (btnText) btnText.textContent = originalText;
+            if (btnIcon) btnIcon.className = originalIconClass;
+          }, 2000);
+        })
+        .catch(() => {
+          if (btnText) btnText.textContent = "Error";
+          setTimeout(() => {
+            if (btnText) btnText.textContent = originalText;
+          }, 2000);
+        });
+    });
+  }
+
+  function setupClickSounds() {
+    const clickSound = new Audio("mouse-click.mp3");
+    clickSound.preload = "auto";
+    clickSound.volume = 0.4;
+
+    // Using event delegation to handle both static and dynamically rendered buttons
+    const interactiveSelector =
+      ".button, .link-btn, .filter-btn, .theme-toggle, .nav-scroll-btn, .back-to-top, .site-nav a";
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest(interactiveSelector)) {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+      }
+    });
   }
 
   // --- Init ---
   renderProjects();
+  initScrollManager();
   setupScrollProgress();
   trackActiveSection();
   setupContactForm();
   setupThemeToggle();
   setupHeroParallax();
   setupProject3D();
+  setupAvatar3D();
   setupOutcomeCounters();
   setupCodeRain();
   setupCursorTracker();
   setupSectionNavigation();
+  setupBackToTop();
+  setupCopyEmail();
+  setupClickSounds();
   registerRevealElements(document);
 
   if (typeof AOS !== "undefined") {
