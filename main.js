@@ -270,7 +270,8 @@
   function buildProjectCard(project, index) {
     const title = escapeHtml(project.title || "Project");
     const description = escapeHtml(project.description || "");
-    const image = escapeHtml(project.image || "");
+    const imageLight = escapeHtml(project.image || "");
+    const imageDark = escapeHtml(project.imageDark || "");
     const gitHubLink = escapeHtml(project.gitHubLink || "#");
     const liveDemoLink =
       project.liveDemoLink && project.liveDemoLink !== "#"
@@ -286,7 +287,7 @@
       ? `<a class="link-btn" href="${liveDemoLink}" target="_blank" rel="noopener noreferrer">
             <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
             <span>Demo</span>
-         </a>`
+        </a>`
       : "";
 
     const delay = Math.min(index * 75, 320);
@@ -299,6 +300,13 @@
           : "animate__fadeInUp";
     const cardId = "project-" + escapeHtml(project.id || index + 1);
 
+    const hasAltTheme = imageDark && imageDark !== imageLight;
+    let imageHtml = `<img src="${imageLight}" class="${hasAltTheme ? "image-light" : ""}" alt="${title} preview" loading="lazy" decoding="async" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+
+    if (hasAltTheme) {
+      imageHtml += `<img src="${imageDark}" class="image-dark" alt="${title} preview" loading="lazy" decoding="async" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+    }
+
     return `
             <article class="project-card reveal"
                      data-animate="${animationName}"
@@ -309,7 +317,7 @@
                      id="${cardId}"
                      data-stagger>
                 <div class="project-image">
-                    <img src="${image}" alt="${title} preview" loading="lazy" decoding="async" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">
+                    ${imageHtml}
                 </div>
                 <div class="project-body">
                     <h3 class="project-title">${title}</h3>
@@ -350,10 +358,18 @@
     // Handle Image loading/errors
     projectsGrid.querySelectorAll("img").forEach((imageEl) => {
       imageEl.addEventListener("error", () => {
+        imageEl.style.display = "none";
         const wrap = imageEl.closest(".project-image");
-        if (wrap)
-          wrap.innerHTML =
-            '<div class="missing-image">Preview unavailable</div>';
+        if (wrap) {
+          const allImages = wrap.querySelectorAll("img");
+          const hiddenImages = Array.from(allImages).filter(
+            (img) => img.style.display === "none",
+          );
+          if (allImages.length === hiddenImages.length) {
+            wrap.innerHTML =
+              '<div class="missing-image">Preview unavailable</div>';
+          }
+        }
       });
 
       imageEl.addEventListener("load", () => {
@@ -501,8 +517,6 @@
   function setupContactForm() {
     if (!contactForm || !formStatus) return;
 
-    const emailInput = contactForm.querySelector('input[name="email"]');
-
     function setFormStatus(message, type) {
       formStatus.textContent = message;
       formStatus.classList.remove("form-status--error", "form-status--success");
@@ -520,11 +534,54 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
     }
 
+    function updateLabelWidths() {
+      fields.forEach((field) => {
+        const wrapper = field.closest(".field-wrap");
+        const label = wrapper?.querySelector("label");
+        if (label && wrapper) {
+          const width = label.offsetWidth;
+          wrapper.style.setProperty("--lw", width + "px");
+        }
+      });
+    }
+
+    function validateField(field) {
+      const name = field.getAttribute("name");
+      const value = field.value.trim();
+      let isValid = true;
+
+      if (!value) {
+        isValid = false;
+      } else if (name === "email" && !isValidEmail(value)) {
+        isValid = false;
+      } else if (name === "message" && value.length < 10) {
+        isValid = false;
+      }
+
+      if (field.hasAttribute("required") || value.length > 0) {
+        updateFieldUI(field, isValid);
+      }
+      return isValid;
+    }
+
+    function updateFieldUI(field, isValid) {
+      if (!isValid) {
+        field.classList.add("field-invalid");
+        field.classList.remove("field-valid");
+      } else {
+        field.classList.remove("field-invalid");
+        field.classList.add("field-valid");
+      }
+    }
+
     function createGlowField(field) {
-      const wrapper = document.createElement("div");
-      wrapper.className = "field-wrap";
-      field.parentNode.insertBefore(wrapper, field);
-      wrapper.appendChild(field);
+      let wrapper = field.closest(".field-wrap");
+      if (!wrapper) {
+        wrapper = document.createElement("div");
+        wrapper.className = "field-wrap";
+        field.parentNode.insertBefore(wrapper, field);
+        wrapper.appendChild(field);
+      }
 
       const glow = document.createElement("span");
       glow.className = "field-glow";
@@ -544,6 +601,7 @@
 
       field.addEventListener("blur", function () {
         glow.classList.remove("active");
+        validateField(field);
       });
 
       field.addEventListener("mousemove", updateGlow);
@@ -557,53 +615,40 @@
         'input[type="text"], input[type="email"], textarea',
       ),
     );
-    fields.forEach(createGlowField);
-
-    if (emailInput) {
-      emailInput.addEventListener("input", function () {
-        if (
-          emailInput.classList.contains("field-invalid") &&
-          isValidEmail(emailInput.value.trim())
-        ) {
-          emailInput.classList.remove("field-invalid");
-          setFormStatus("", "");
-        }
+    fields.forEach((field) => {
+      createGlowField(field);
+      field.addEventListener("input", () => {
+        if (field.classList.contains("field-invalid")) validateField(field);
       });
+    });
+
+    // Initialize dynamic notches after fonts are ready
+    if (document.fonts) {
+      document.fonts.ready.then(updateLabelWidths);
+    } else {
+      setTimeout(updateLabelWidths, 500);
     }
+
+    window.addEventListener("resize", updateLabelWidths);
 
     contactForm.setAttribute("novalidate", "novalidate");
 
     contactForm.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      const formData = new FormData(contactForm);
-      const name = String(formData.get("name") || "").trim();
-      const email = String(formData.get("email") || "").trim();
-      const message = String(formData.get("message") || "").trim();
+      let isFormValid = true;
+      fields.forEach((field) => {
+        if (!validateField(field)) isFormValid = false;
+      });
+
+      if (!isFormValid) {
+        setFormStatus("Please correct the errors before submitting.", "error");
+        return;
+      }
+
       const endpoint = String(
         contactForm.dataset.formspreeEndpoint || "",
       ).trim();
-      if (emailInput) {
-        emailInput.classList.remove("field-invalid");
-      }
-
-      if (!name || !email || !message) {
-        setFormStatus("Please fill in all fields before sending.", "error");
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        if (emailInput) {
-          emailInput.classList.add("field-invalid");
-          emailInput.focus();
-        }
-
-        setFormStatus(
-          "That email doesn't look valid. Try format: name@example.com",
-          "error",
-        );
-        return;
-      }
 
       if (!endpoint) {
         setFormStatus("Form configuration error. Missing endpoint.", "error");
@@ -616,10 +661,15 @@
         ? submitBtnText.textContent
         : "Send Message";
 
-      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add("is-loading");
+      }
+
       if (submitBtnText) submitBtnText.textContent = "Sending...";
       setFormStatus("Sending message...", "success");
 
+      const formData = new FormData(contactForm);
       fetch(endpoint, {
         method: "POST",
         body: formData,
@@ -631,6 +681,7 @@
               "Message sent! I'll get back to you soon.",
               "success",
             );
+            fields.forEach((f) => f.classList.remove("field-valid"));
             contactForm.reset();
           } else {
             setFormStatus(
@@ -646,7 +697,11 @@
           );
         })
         .finally(() => {
-          if (submitBtn) submitBtn.disabled = false;
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("is-loading");
+          }
+
           if (submitBtnText) submitBtnText.textContent = originalBtnText;
         });
     });
@@ -799,7 +854,8 @@
     if (!cursorDot || !cursorRing || !finePointer || prefersReducedMotion)
       return;
 
-    const hoverSelector = "a, button, input, textarea, .project-card, .hero-avatar";
+    const hoverSelector =
+      "a, button, input, textarea, .project-card, .hero-avatar";
     let pointerX = -100,
       pointerY = -100;
     let ringX = -100,
@@ -995,7 +1051,11 @@
     if (prefersReducedMotion || !finePointer) {
       return;
     }
-    const cards = Array.from(document.querySelectorAll(".project-card, .now-card, .meta-card, .proof-card, .outcome-card, .experience-card"));
+    const cards = Array.from(
+      document.querySelectorAll(
+        ".project-card, .now-card, .meta-card, .proof-card, .outcome-card, .experience-card",
+      ),
+    );
     if (!cards.length) return;
 
     cards.forEach(function (card) {
@@ -1073,7 +1133,9 @@
       currentScale = 1;
     let rafId = null;
 
-    const updateBounds = () => { bounds = avatar.getBoundingClientRect(); };
+    const updateBounds = () => {
+      bounds = avatar.getBoundingClientRect();
+    };
 
     function animate() {
       currentX += (targetX - currentX) * 0.12;
@@ -1094,16 +1156,21 @@
       if (!bounds) return;
       const relX = (e.clientX - bounds.left) / bounds.width;
       const relY = (e.clientY - bounds.top) / bounds.height;
-      targetY = (relX - 0.5) * 15; 
+      targetY = (relX - 0.5) * 15;
       targetX = (relY - 0.5) * -15;
     });
 
     avatar.addEventListener("mouseleave", () => {
-      targetX = 0; targetY = 0;
-      currentX = 0; currentY = 0;
+      targetX = 0;
+      targetY = 0;
+      currentX = 0;
+      currentY = 0;
       targetScale = 1;
       currentScale = 1;
-      if (rafId) { window.cancelAnimationFrame(rafId); rafId = null; }
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = null;
+      }
       avatar.style.transition = "";
       avatar.style.transform = "";
     });
@@ -1215,6 +1282,17 @@
     });
   }
 
+  function setupMobileHaptics() {
+    const mobileActions = document.querySelector(".mobile-actions");
+    if (!mobileActions) return;
+
+    mobileActions.addEventListener("click", (event) => {
+      if (event.target.closest(".mobile-action") && "vibrate" in navigator) {
+        navigator.vibrate(15);
+      }
+    });
+  }
+
   // --- Init ---
   renderProjects();
   initScrollManager();
@@ -1232,6 +1310,7 @@
   setupBackToTop();
   setupCopyEmail();
   setupClickSounds();
+  setupMobileHaptics();
   registerRevealElements(document);
 
   if (typeof AOS !== "undefined") {

@@ -346,19 +346,20 @@
                 </h2>
             </div>
             <div class="contact-layout">
-                <div class="contact-info">
-                    <p>Open to software engineering and full-stack .NET opportunities. Reach out for collaboration or
-                        hiring discussions.</p>
+                <div class="contact-info" data-stagger>
+                    <p> Reach out for collaboration or hiring discussions.</p>
                     <div class="contact-actions">
-                        <div class="contact-button-group">
-                            <a class="contact-action button button-secondary"
-                                href="mailto:ahmedmohammedsaad01@gmail.com" target="_blank" rel="noopener noreferrer"><i
-                                    class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email Me</span></a>
-                            <button class="contact-action button button-secondary" id="copyEmailBtn"
-                                data-email="ahmedmohammedsaad01@gmail.com" type="button">
-                                <i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy Email</span>
-                            </button>
-                        </div>
+                        <a class="contact-action button button-secondary" href="mailto:ahmedmohammedsaad01@gmail.com"
+                            target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-envelope"
+                                aria-hidden="true"></i><span>Email Me</span></a>
+                        <button class="contact-action button button-secondary" id="copyEmailBtn"
+                            data-email="ahmedmohammedsaad01@gmail.com" type="button">
+                            <i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy Email</span>
+                        </button>
+                        <a class="contact-action button button-secondary"
+                            href="https://www.facebook.com/ahmed.saad.120234/" target="_blank"
+                            rel="noopener noreferrer"><i class="fa-brands fa-facebook"
+                                aria-hidden="true"></i><span>Facebook</span></a>
                         <a class="contact-action button button-secondary" href="https://wa.link/rm627m" target="_blank"
                             rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"
                                 aria-hidden="true"></i><span>WhatsApp</span></a>
@@ -377,17 +378,24 @@
                     <p>Zagazig, Sharqia, Egypt | Zip Code: 44511</p>
                 </div>
                 <form id="contactForm" class="contact-form" data-formspree-endpoint="https://formspree.io/f/mvzdolrj">
-                    <label for="name">Name</label>
-                    <input id="name" name="name" type="text" required>
+                    <div class="field-wrap" data-stagger>
+                        <input id="name" name="name" type="text" required placeholder=" ">
+                        <label for="name">Name</label>
+                    </div>
 
-                    <label for="email">Email</label>
-                    <input id="email" name="email" type="email" required>
+                    <div class="field-wrap" data-stagger>
+                        <input id="email" name="email" type="email" required placeholder=" ">
+                        <label for="email">Email</label>
+                    </div>
 
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
+                    <div class="field-wrap" data-stagger>
+                        <textarea id="message" name="message" rows="5" required placeholder=" "></textarea>
+                        <label for="message">Message</label>
+                    </div>
 
-                    <button type="submit" class="button button-primary">
-                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                    <button type="submit" class="button button-primary" data-stagger>
+                        <i class="fa-solid fa-paper-plane btn-icon" aria-hidden="true"></i>
+                        <i class="fa-solid fa-circle-notch fa-spin btn-spinner" aria-hidden="true"></i>
                         <span>Send Message</span>
                     </button>
                     <p id="formStatus" class="form-status" role="status" aria-live="polite"></p>
@@ -404,35 +412,53 @@
                     <p class="footer-tagline">Full-Stack .NET Developer</p>
                 </div>
                 <div class="footer-links">
-                    <a href="mailto:ahmedmohammedsaad01@gmail.com"><i class="fa-solid fa-envelope"
-                            aria-hidden="true"></i><span>Email</span></a>
+                    <a href="mailto:ahmedmohammedsaad01@gmail.com" data-tooltip="Send me an email"
+                        aria-label="Send me an email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>
                     <a href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
-                        rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"
-                            aria-hidden="true"></i><span>LinkedIn</span></a>
-                    <a href="https://github.com/AhmedSaad-EGY" target="_blank" rel="noopener noreferrer"><i
-                            class="fa-brands fa-github" aria-hidden="true"></i><span>GitHub</span></a>
-                    <a href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer"><i
-                            class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span></a>
+                        rel="noopener noreferrer" data-tooltip="Connect on LinkedIn" aria-label="Connect on LinkedIn"><i
+                            class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+                    <a href="https://github.com/AhmedSaad-EGY" target="_blank" rel="noopener noreferrer"
+                        data-tooltip="View my GitHub projects" aria-label="View my GitHub projects"><i
+                            class="fa-brands fa-github" aria-hidden="true"></i></a>
+                    <a href="https://www.facebook.com/ahmed.saad.120234/" target="_blank" rel="noopener noreferrer"
+                        data-tooltip="Follow on Facebook" aria-label="Follow on Facebook"><i
+                            class="fa-brands fa-facebook" aria-hidden="true"></i></a>
+                    <a href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer"
+                        data-tooltip="Chat on WhatsApp" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"
+                            aria-hidden="true"></i></a>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p class="footer-copy">&copy; <span id="year"></span> Ahmed Mohammed Saad. All rights reserved.</p>
+                <p class="footer-made">Made with <i class="fa-solid fa-heart heart-icon" aria-hidden="true"></i> by
+                    Ahmed</p>
             </div>
         </div>
     </footer>
     <nav class="mobile-actions" aria-label="Quick actions">
-        <a class="mobile-action" href="mailto:ahmedmohammedsaad01@gmail.com">
-            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-            <span>Email</span>
+        <a class="mobile-action" href="https://www.facebook.com/ahmed.saad.120234/" target="_blank"
+            rel="noopener noreferrer" aria-label="Facebook">
+            <i class="fa-brands fa-facebook" aria-hidden="true"></i>
         </a>
-        <a class="mobile-action" href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer">
+        <a class="mobile-action" href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer"
+            aria-label="WhatsApp">
             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-            <span>WhatsApp</span>
+        </a>
+        <a class="mobile-action" href="https://github.com/AhmedSaad-EGY" target="_blank" rel="noopener noreferrer"
+            aria-label="GitHub">
+            <i class="fa-brands fa-github" aria-hidden="true"></i>
+            <span class="notification-dot" aria-hidden="true"></span>
+        </a>
+        <a class="mobile-action" href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
+            rel="noopener noreferrer" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+        </a>
+        <a class="mobile-action" href="mailto:ahmedmohammedsaad01@gmail.com" aria-label="Email">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
         </a>
         <a class="mobile-action" href="https://drive.google.com/file/d/1bAhfAU3XxhW_ZlCcZTpd6_vbgPUcgaQ4/view"
-            target="_blank" rel="noopener noreferrer">
+            target="_blank" rel="noopener noreferrer" aria-label="Resume">
             <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
-            <span>Resume</span>
         </a>
     </nav>
 

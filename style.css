@@ -1262,7 +1262,21 @@ h2 {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease, opacity 0.4s ease;
+}
+
+.project-image .image-dark {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+}
+
+:root[data-theme="dark"] .project-image .image-dark {
+    opacity: 1;
+}
+
+:root[data-theme="dark"] .project-image .image-light {
+    opacity: 0;
 }
 
 .project-card:hover .project-image img {
@@ -1460,14 +1474,13 @@ h2 {
 
 .contact-actions {
     display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-bottom: 12px;
 }
 
-.contact-button-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+.contact-action:last-child:nth-child(odd) {
+    grid-column: span 2;
 }
 
 .contact-action {
@@ -1478,58 +1491,162 @@ h2 {
 .contact-form {
     padding: 24px;
     display: grid;
-    gap: 10px;
+    /* Ensure the form fills the height of the grid column on large screens */
+    height: 100%;
+    /* Row 3 (Message) grows to fill empty space */
+    grid-template-rows: auto auto 1fr auto auto;
+    gap: 16px;
     position: relative;
-}
-
-.contact-form label {
-    font-size: 0.92rem;
-    color: var(--muted);
 }
 
 .field-wrap {
     position: relative;
-    display: grid;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Force the message field wrapper to fill the 1fr flexible grid row */
+.contact-form > .field-wrap:nth-of-type(3) {
+    height: 100%;
+}
+
+.field-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 2;
+    transition: border-color 0.3s ease, filter 0.3s ease, clip-path 0.4s ease;
+    /* Initialize with 8 points clustered at the center to allow "drawing" from center-out */
+    clip-path: polygon(0 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            100% 0,
+            100% 100%,
+            0 100%);
+}
+
+.field-wrap:focus-within::before,
+.field-wrap:has(input:not(:placeholder-shown))::before,
+.field-wrap:has(textarea:not(:placeholder-shown))::before {
+    /* "Cut" the top border using the dynamic label width (--lw) */
+    clip-path: polygon(0 0,
+            10px 0,
+            10px 2px,
+            calc(var(--lw, 0px) + 14px) 2px,
+            calc(var(--lw, 0px) + 14px) 0,
+            100% 0,
+            100% 100%,
+            0 100%);
+}
+
+.field-wrap:focus-within::before {
+    border-color: var(--accent-2);
+    filter: drop-shadow(0 0 6px rgba(68, 212, 255, 0.35));
+}
+
+.field-wrap:has(.field-invalid)::before {
+    border-color: #ff5c7c;
+    filter: drop-shadow(0 0 6px rgba(255, 92, 124, 0.25));
+}
+
+.field-wrap::after {
+    content: "\f058";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    color: var(--success);
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    opacity: 0;
+    z-index: 10;
+}
+
+.field-wrap:has(.field-valid)::after {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+}
+
+.field-wrap:has(textarea)::after {
+    top: 22px;
+    transform: translateY(0) scale(0);
+}
+
+.field-wrap:has(textarea.field-valid)::after {
+    transform: translateY(0) scale(1);
+}
+
+.contact-form label {
+    position: absolute;
+    left: 12px;
+    top: 13px;
+    font-size: 0.92rem;
+    color: var(--muted);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0 4px;
+    z-index: 12;
+}
+
+.contact-form input:focus+label,
+.contact-form input:not(:placeholder-shown)+label,
+.contact-form textarea:focus+label,
+.contact-form textarea:not(:placeholder-shown)+label {
+    top: -10px;
+    left: 10px;
+    font-size: 0.88rem;
+    color: var(--accent-2);
+    font-weight: 700;
 }
 
 .contact-form input,
 .contact-form textarea {
     width: 100%;
-    border: 1px solid var(--panel-border);
+    border: none;
     border-radius: 12px;
     background: var(--bg-soft);
     color: var(--text);
     font: inherit;
-    padding: 11px 12px;
+    padding: 11px 38px 11px 12px;
     outline: none;
-    transition: border-color 0.22s ease, box-shadow 0.22s ease;
+    position: relative;
+    z-index: 1;
+    transition: background-color 0.22s ease, clip-path 0.4s ease;
+    /* Sync background clipping with the border notch */
+    clip-path: polygon(0 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            calc(var(--lw, 0px) / 2 + 12px) 0,
+            100% 0,
+            100% 100%,
+            0 100%);
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-    border-color: rgba(68, 212, 255, 0.72);
-    box-shadow: 0 0 0 4px rgba(68, 212, 255, 0.15);
+    box-shadow: none;
 }
 
-.contact-form input,
-.contact-form textarea {
-    position: relative;
-    z-index: 1;
-}
-
-.contact-form .field-glow {
-    position: absolute;
-    inset: -2px;
-    border-radius: 14px;
-    background: radial-gradient(circle at var(--focus-x, 50%) var(--focus-y, 50%),
-                color-mix(in srgb,
-                var(--accent-2),
-                transparent 82%),
-                transparent 60%);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-    z-index: 0;
+.field-wrap:focus-within input,
+.field-wrap:focus-within textarea,
+.field-wrap:has(input:not(:placeholder-shown)) input,
+.field-wrap:has(textarea:not(:placeholder-shown)) textarea {
+    clip-path: polygon(0 0,
+            10px 0,
+            10px 2px,
+            calc(var(--lw, 0px) + 14px) 2px,
+            calc(var(--lw, 0px) + 14px) 0,
+            100% 0,
+            100% 100%,
+            0 100%);
 }
 
 .contact-form .field-glow.active {
@@ -1537,8 +1654,6 @@ h2 {
 }
 
 .contact-form input.field-invalid {
-    border-color: #ff5c7c;
-    box-shadow: 0 0 0 4px rgba(255, 92, 124, 0.22);
     background: rgba(255, 92, 124, 0.06);
 }
 
@@ -1654,10 +1769,12 @@ h2 {
 
 .footer-top {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 24px;
 }
 
 .footer-brand {
@@ -1668,8 +1785,18 @@ h2 {
 .footer-name {
     margin: 0;
     font-family: "Chakra Petch", sans-serif;
-    font-size: 1.05rem;
-    color: var(--text);
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    transition: filter 0.3s ease;
+}
+
+.footer-name:hover {
+    animation: footer-glow-pulse 2s infinite ease-in-out;
 }
 
 .footer-tagline {
@@ -1679,6 +1806,7 @@ h2 {
 
 .footer-links {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -1696,6 +1824,7 @@ h2 {
     font-weight: 600;
     font-size: 0.88rem;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .footer-links a i {
@@ -1703,24 +1832,88 @@ h2 {
     font-size: 0.9rem;
 }
 
-.footer-links a:hover {
+.footer-links a:hover,
+.footer-links a:focus-visible {
     border-color: var(--accent);
     background: var(--btn-secondary-hover-bg);
     color: var(--accent);
     transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+        0 0 15px color-mix(in srgb, var(--accent), transparent 60%);
+    outline: none;
+}
+
+.footer-links a:hover i,
+.footer-links a:focus-visible i {
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent), transparent 40%);
+}
+
+.footer-links a[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--bg-soft);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--panel-border);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.2s ease, opacity 0.2s ease, visibility 0.2s;
+    box-shadow: var(--shadow);
+    z-index: 100;
+}
+
+.footer-links a[data-tooltip]:hover::after,
+.footer-links a[data-tooltip]:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
 .footer-bottom {
     padding-top: 30px;
     border-top: 1px solid var(--panel-border);
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     opacity: 0.7;
 }
 
 .footer-copy {
     margin: 4px 0 0;
+}
+
+.footer-made {
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.heart-icon {
+    color: #ff4d4d;
+    animation: heartBeat 1.5s infinite;
+}
+
+@keyframes heartBeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
 }
 
 .mobile-actions {
@@ -1744,14 +1937,14 @@ h2 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 10px 12px;
+    position: relative;
+    padding: 12px;
     border-radius: 12px;
     background: var(--bg-soft);
     border: 1px solid var(--panel-border);
     color: var(--text);
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
 }
 
 .mobile-action i {
@@ -1762,6 +1955,41 @@ h2 {
     border-color: var(--btn-secondary-hover-border);
     background: var(--btn-secondary-hover-bg);
     color: var(--accent);
+}
+
+.mobile-action:active {
+    transform: scale(0.92);
+    transition: transform 0.05s ease;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(105, 245, 199, 0.7);
+    animation: pulse-dot 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes pulse-dot {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(105, 245, 199, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(105, 245, 199, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(105, 245, 199, 0);
+    }
 }
 
 .reveal {
@@ -1831,6 +2059,20 @@ h2 {
     }
 }
 
+@keyframes footer-glow-pulse {
+    0% {
+        filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent), transparent 30%));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 18px color-mix(in srgb, var(--accent), transparent 10%));
+    }
+
+    100% {
+        filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent), transparent 30%));
+    }
+}
+
 @keyframes codeFall {
     from {
         transform: translateY(-200px);
@@ -1858,6 +2100,16 @@ h2 {
     .hero,
     .contact-layout {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .contact-info,
+    .contact-form {
+        padding: 18px;
+    }
+
+    .field-wrap {
+        margin-top: 4px;
     }
 
     .about-meta {
@@ -1878,6 +2130,15 @@ h2 {
 
     .now-status {
         grid-column: 1 / -1;
+    }
+
+    .footer-top {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .footer-links {
+        justify-content: center;
     }
 
     body {
