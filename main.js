@@ -1266,18 +1266,31 @@
   }
 
   function setupClickSounds() {
-    const clickSound = new Audio("mouse-click.mp3");
-    clickSound.preload = "auto";
-    clickSound.volume = 0.4;
+    const sounds = {
+      ui: new Audio("mouse-click.mp3"),
+      rocket: new Audio("rocket.mp3"),
+    };
 
-    // Using event delegation to handle both static and dynamically rendered buttons
-    const interactiveSelector =
-      ".button, .link-btn, .filter-btn, .theme-toggle, .nav-scroll-btn, .back-to-top, .site-nav a";
+    sounds.ui.volume = 0.4;
+    sounds.rocket.volume = 0.5;
+
+    // Priority-based mapping: put more specific selectors first
+    const soundMap = [
+      { selector: ".back-to-top", sound: sounds.rocket },
+      {
+        selector:
+          ".button, .link-btn, .filter-btn, .theme-toggle, .nav-scroll-btn, .site-nav a",
+        sound: sounds.ui,
+      },
+    ];
 
     document.addEventListener("click", (event) => {
-      if (event.target.closest(interactiveSelector)) {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(() => {});
+      const target = event.target;
+      const match = soundMap.find((entry) => target.closest(entry.selector));
+
+      if (match) {
+        match.sound.currentTime = 0;
+        match.sound.play().catch(() => {});
       }
     });
   }

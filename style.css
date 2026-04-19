@@ -687,10 +687,15 @@ h2 {
 .hero {
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
+    grid-template-areas: 
+        "copy card"
+        "actions card";
     gap: 24px;
     align-items: center;
     position: relative;
 }
+
+.hero-copy { grid-area: copy; align-self: end; }
 
 .hero-subtext {
     margin: 22px 0 0;
@@ -722,6 +727,8 @@ h2 {
 }
 
 .hero-actions {
+    grid-area: actions;
+    align-self: start;
     margin-top: 28px;
     display: flex;
     gap: 12px;
@@ -729,6 +736,7 @@ h2 {
 }
 
 .hero-card {
+    grid-area: card;
     background: var(--panel);
     border: 1px solid var(--panel-border);
     border-radius: var(--radius);
@@ -2100,7 +2108,16 @@ h2 {
     .hero,
     .contact-layout {
         grid-template-columns: 1fr;
+        grid-template-areas:
+            "copy"
+            "card"
+            "actions";
         gap: 16px;
+    }
+
+    .hero-copy,
+    .hero-actions {
+        align-self: stretch;
     }
 
     .contact-info,
