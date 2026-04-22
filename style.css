@@ -128,6 +128,11 @@ a {
     text-decoration: none;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 .scroll-progress {
     position: fixed;
     top: 0;
@@ -142,7 +147,6 @@ a {
     pointer-events: none;
     box-shadow: 0 0 16px rgba(68, 212, 255, 0.3);
     will-change: transform;
-    animation: underlineShift 1s ease-in-out infinite;
     transition: opacity 0.22s ease;
 }
 
@@ -746,13 +750,6 @@ h2 {
     overflow: hidden;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .hero-card {
-        animation: heroFloat 8s ease-in-out infinite;
-        will-change: transform;
-    }
-}
-
 .hero-card::before {
     content: "";
     position: absolute;
@@ -771,7 +768,6 @@ h2 {
     margin-bottom: 18px;
     position: relative;
     box-shadow: 0 0 15px -2px var(--accent-2), inset 0 0 10px 0px var(--accent-2);
-    animation: avatarBorderShift 1s linear infinite;
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform-style: preserve-3d;
     cursor: pointer;
@@ -1603,10 +1599,11 @@ h2 {
     z-index: 12;
 }
 
-.contact-form input:focus+label,
-.contact-form input:not(:placeholder-shown)+label,
-.contact-form textarea:focus+label,
-.contact-form textarea:not(:placeholder-shown)+label {
+.field-wrap:focus-within label,
+.field-wrap:has(input:not(:placeholder-shown)) label,
+.field-wrap:has(textarea:not(:placeholder-shown)) label,
+.field-wrap:has(input:-webkit-autofill) label,
+.field-wrap:has(textarea:-webkit-autofill) label {
     top: -10px;
     left: 10px;
     font-size: 0.88rem;
@@ -1638,6 +1635,11 @@ h2 {
             0 100%);
 }
 
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: transparent;
+}
+
 .contact-form input:focus,
 .contact-form textarea:focus {
     box-shadow: none;
@@ -1646,7 +1648,9 @@ h2 {
 .field-wrap:focus-within input,
 .field-wrap:focus-within textarea,
 .field-wrap:has(input:not(:placeholder-shown)) input,
-.field-wrap:has(textarea:not(:placeholder-shown)) textarea {
+.field-wrap:has(textarea:not(:placeholder-shown)) textarea,
+.field-wrap:has(input:-webkit-autofill) input,
+.field-wrap:has(textarea:-webkit-autofill) textarea {
     clip-path: polygon(0 0,
             10px 0,
             10px 2px,
@@ -1663,6 +1667,20 @@ h2 {
 
 .contact-form input.field-invalid {
     background: rgba(255, 92, 124, 0.06);
+}
+
+.contact-form input:-webkit-autofill,
+.contact-form input:-webkit-autofill:hover,
+.contact-form input:-webkit-autofill:focus,
+.contact-form textarea:-webkit-autofill,
+.contact-form textarea:-webkit-autofill:hover,
+.contact-form textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text);
+    caret-color: var(--text);
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-soft) inset;
+    box-shadow: 0 0 0 1000px var(--bg-soft) inset;
+    border-radius: 12px;
+    transition: background-color 9999s ease-out, color 9999s ease-out;
 }
 
 .form-status {
@@ -2209,35 +2227,6 @@ h2 {
 
     100% {
         transform: translateX(120%);
-    }
-}
-
-@keyframes heroFloat {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
-}
-
-@keyframes avatarBorderShift {
-    0% {
-        border-color: var(--accent-2);
-        box-shadow: 0 0 15px -2px var(--accent-2), inset 0 0 10px 0px var(--accent-2);
-    }
-
-    50% {
-        border-color: var(--accent);
-        box-shadow: 0 0 20px -2px var(--accent), inset 0 0 10px 0px var(--accent);
-    }
-
-    100% {
-        border-color: var(--success);
-        box-shadow: 0 0 15px -2px var(--success), inset 0 0 10px 0px var(--success);
     }
 }
 

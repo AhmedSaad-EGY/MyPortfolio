@@ -24,7 +24,6 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -83,7 +82,7 @@
                 <span class="theme-prefix">Theme:</span>
                 <span id="themeLabel">Dark</span>
             </button>
-            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false"
+            <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false"
                 aria-controls="primaryNav">
                 <span></span>
                 <span></span>
@@ -105,9 +104,9 @@
             <div class="hero-card reveal" data-animate="animate__zoomIn" data-animate-delay="120ms"
                 data-animate-duration="800ms">
                 <div class="hero-avatar">
-                    <img class="avatar-light" src="ahmed.png" alt="Ahmed Mohammed Saad portrait" loading="lazy"
-                        decoding="async" width="1024" height="1166">
-                    <img class="avatar-dark" src="ahmed-dark.png" alt="Ahmed Mohammed Saad portrait" loading="lazy"
+                    <img class="avatar-light" src="ahmed.png" alt="Ahmed Mohammed Saad portrait" loading="eager"
+                        fetchpriority="high" decoding="async" width="1024" height="1166">
+                    <img class="avatar-dark" src="ahmed-dark.png" alt="Ahmed Mohammed Saad portrait" loading="eager"
                         decoding="async" width="1024" height="1166">
                 </div>
                 <p class="hero-name">Ahmed Mohammed Saad</p>
@@ -151,8 +150,8 @@
                     I focus on scalable backend architecture, relational database engineering, and building integrated
                     frontend experiences.
                 </p>
-                <div class="skills-grid mt-4">
-                    <div class="skill-category" data-stagger data-aos="fade-up">
+                <div class="skills-grid">
+                    <div class="skill-category" data-stagger>
                         <div class="skill-category-header">
                             <i class="fa-solid fa-desktop" aria-hidden="true"></i>
                             <h3>Frontend</h3>
@@ -162,11 +161,10 @@
                             <span>CSS3</span>
                             <span>JavaScript</span>
                             <span>Bootstrap 5</span>
-                            <span>Angular</span>
                             <span>Vue.js</span>
                         </div>
                     </div>
-                    <div class="skill-category" data-stagger data-aos="fade-up">
+                    <div class="skill-category" data-stagger>
                         <div class="skill-category-header">
                             <i class="fa-solid fa-server" aria-hidden="true"></i>
                             <h3>Backend</h3>
@@ -185,7 +183,7 @@
                             <span>Clean Architecture</span>
                         </div>
                     </div>
-                    <div class="skill-category" data-stagger data-aos="fade-up">
+                    <div class="skill-category" data-stagger>
                         <div class="skill-category-header">
                             <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
                             <h3>Tools</h3>
@@ -269,7 +267,7 @@
                     <p class="outcome-label">SQL views crafted for reporting</p>
                 </article>
                 <article class="outcome-card" data-stagger>
-                    <p class="outcome-value" data-count="3">3</p>
+                    <p class="outcome-value" data-count="5">5</p>
                     <p class="outcome-label">End-to-end projects shipped</p>
                 </article>
             </div>
@@ -295,7 +293,7 @@
                         that links traders directly with restaurants, helping reduce market monopolies and giving small
                         traders a fair opportunity to compete in auctions.</p>
                     <div class="now-meta">
-                        <span><i class="fa-regular fa-clock" aria-hidden="true"></i>Start in 2-3 weeks</span>
+                        <span><i class="fa-regular fa-clock" aria-hidden="true"></i>Start in 1-2 weeks</span>
                         <span><i class="fa-solid fa-earth-africa" aria-hidden="true"></i>Remote or hybrid</span>
                         <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Egypt (GMT+2)</span>
                     </div>
@@ -307,6 +305,8 @@
                         <li>Clean Architecture in ASP.NET Core</li>
                         <li>JWT security and role-based permissions</li>
                         <li>Performance tuning in SQL Server</li>
+                        <li>Building integrated frontend experiences</li>
+                        <li>Responsive and modern UI design</li>
                     </ul>
                 </article>
 
@@ -375,17 +375,19 @@
                 </div>
                 <form id="contactForm" class="contact-form" data-formspree-endpoint="https://formspree.io/f/mvzdolrj">
                     <div class="field-wrap" data-stagger>
-                        <input id="name" name="name" type="text" required placeholder=" ">
+                        <input id="name" name="name" type="text" required autocomplete="name" placeholder=" ">
                         <label for="name">Name</label>
                     </div>
 
                     <div class="field-wrap" data-stagger>
-                        <input id="email" name="email" type="email" required placeholder=" ">
+                        <input id="email" name="email" type="email" required autocomplete="email" inputmode="email"
+                            placeholder=" ">
                         <label for="email">Email</label>
                     </div>
 
                     <div class="field-wrap" data-stagger>
-                        <textarea id="message" name="message" rows="5" required placeholder=" "></textarea>
+                        <textarea id="message" name="message" rows="5" required autocomplete="off"
+                            placeholder=" "></textarea>
                         <label for="message">Message</label>
                     </div>
 
@@ -459,20 +461,19 @@
 
     <!-- Smart Section Navigation -->
     <div class="section-nav-container" id="sectionNav">
-        <button class="nav-scroll-btn hidden" id="navUp" aria-label="Scroll to previous section">
+        <button class="nav-scroll-btn hidden" id="navUp" type="button" aria-label="Scroll to previous section">
             <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
         </button>
-        <button class="nav-scroll-btn" id="navDown" aria-label="Scroll to next section">
+        <button class="nav-scroll-btn" id="navDown" type="button" aria-label="Scroll to next section">
             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
         </button>
     </div>
 
     <!-- Back to Top Rocket Button -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">
         <i class="fa-solid fa-rocket" aria-hidden="true"></i>
     </button>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="projects.js"></script>
     <script src="main.js"></script>
 </body>

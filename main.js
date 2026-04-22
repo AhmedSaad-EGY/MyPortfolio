@@ -23,21 +23,14 @@
 
   // Store scroll/resize tasks to run in a unified loop
   const scrollTasks = [];
+  const tiltBoundsUpdaters = [];
+  let tiltResizeBound = false;
 
   const MOBILE_NAV_BREAKPOINT = 1080;
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
   const finePointer = window.matchMedia("(pointer: fine)").matches;
-
-  // --- Utilities ---
-  function debounce(fn, delay) {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => fn(...args), delay);
-    };
-  }
 
   // Centralized Scroll Manager using requestAnimationFrame
   function initScrollManager() {
@@ -181,6 +174,7 @@
     const pause = 3000;
     const initialDelay = 600;
     let phraseIndex = 0;
+    const shouldLoop = textList.length > 1;
 
     function runTyping() {
       const phrase = textList[phraseIndex];
@@ -195,6 +189,9 @@
         if (index >= phrase.length) {
           window.clearInterval(intervalId);
           targetOverlay.classList.remove("typing");
+          if (!shouldLoop) {
+            return;
+          }
           phraseIndex = (phraseIndex + 1) % textList.length;
           window.setTimeout(runTyping, pause);
         }
@@ -290,7 +287,6 @@
         </a>`
       : "";
 
-    const delay = Math.min(index * 75, 320);
     const animateDelay = Math.min(index * 80, 420) + "ms";
     const animationName =
       index % 3 === 1
@@ -301,10 +297,10 @@
     const cardId = "project-" + escapeHtml(project.id || index + 1);
 
     const hasAltTheme = imageDark && imageDark !== imageLight;
-    let imageHtml = `<img src="${imageLight}" class="${hasAltTheme ? "image-light" : ""}" alt="${title} preview" loading="lazy" decoding="async" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+    let imageHtml = `<img src="${imageLight}" class="${hasAltTheme ? "image-light" : ""}" alt="${title} preview" loading="lazy" decoding="async" fetchpriority="low" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
 
     if (hasAltTheme) {
-      imageHtml += `<img src="${imageDark}" class="image-dark" alt="${title} preview" loading="lazy" decoding="async" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+      imageHtml += `<img src="${imageDark}" class="image-dark" alt="${title} preview" loading="lazy" decoding="async" fetchpriority="low" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
     }
 
     return `
@@ -312,8 +308,6 @@
                      data-animate="${animationName}"
                      data-animate-duration="760ms"
                      data-animate-delay="${animateDelay}"
-                     data-aos="fade-up"
-                     style="transition-delay:${delay}ms"
                      id="${cardId}"
                      data-stagger>
                 <div class="project-image">
@@ -340,7 +334,9 @@
     let projectData = normalizeProjects(window.projects);
 
     if (filterTag !== "All") {
-      projectData = projectData.filter((p) => p.tags.includes(filterTag));
+      projectData = projectData.filter(
+        (p) => Array.isArray(p.tags) && p.tags.includes(filterTag),
+      );
     }
 
     if (!projectData || projectData.length === 0) {
@@ -382,7 +378,7 @@
     });
 
     registerRevealElements(projectsGrid);
-    if (typeof AOS !== "undefined") AOS.refresh();
+    setupProject3D();
   }
 
   function setupProjectFilters() {
@@ -860,6 +856,7 @@
       pointerY = -100;
     let ringX = -100,
       ringY = -100;
+    let ringRafId = null;
 
     document.body.classList.add("cursor-ready");
 
@@ -867,18 +864,32 @@
       cursorDot.style.transform = `translate3d(${pointerX}px, ${pointerY}px, 0) translate(-50%, -50%)`;
     }
 
+    function scheduleRingAnimation() {
+      if (ringRafId) return;
+      ringRafId = window.requestAnimationFrame(animateRing);
+    }
+
     function animateRing() {
       ringX += (pointerX - ringX) * 0.18;
       ringY += (pointerY - ringY) * 0.18;
 
       cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
-      window.requestAnimationFrame(animateRing);
+      const isSettled =
+        Math.abs(pointerX - ringX) < 0.1 && Math.abs(pointerY - ringY) < 0.1;
+
+      if (isSettled) {
+        ringRafId = null;
+        return;
+      }
+
+      ringRafId = window.requestAnimationFrame(animateRing);
     }
 
     window.addEventListener("mousemove", function (event) {
       pointerX = event.clientX;
       pointerY = event.clientY;
       paintDot();
+      scheduleRingAnimation();
     });
 
     window.addEventListener("mouseout", function (event) {
@@ -887,6 +898,7 @@
       pointerX = -100;
       pointerY = -100;
       paintDot();
+      scheduleRingAnimation();
     });
 
     document.addEventListener("mouseover", function (event) {
@@ -912,7 +924,7 @@
     });
 
     paintDot();
-    animateRing();
+    scheduleRingAnimation();
   }
 
   function setupCodeRain() {
@@ -974,12 +986,12 @@
       ];
       const streamCount =
         window.innerWidth >= 1280
-          ? 24
+          ? 16
           : window.innerWidth >= 1000
-            ? 18
+            ? 12
             : window.innerWidth >= 760
-              ? 14
-              : 10;
+              ? 9
+              : 6;
       const fragment = document.createDocumentFragment();
 
       for (let i = 0; i < streamCount; i += 1) {
@@ -1059,6 +1071,11 @@
     if (!cards.length) return;
 
     cards.forEach(function (card) {
+      if (card.dataset.tiltBound === "true") {
+        return;
+      }
+
+      card.dataset.tiltBound = "true";
       let bounds = null;
       let targetX = 0,
         targetY = 0;
@@ -1070,7 +1087,12 @@
         mouseY = 50;
       let rafId = null;
 
-      const updateBounds = () => (bounds = card.getBoundingClientRect());
+      const updateBounds = () => {
+        if (!document.body.contains(card)) return;
+        bounds = card.getBoundingClientRect();
+      };
+
+      tiltBoundsUpdaters.push(updateBounds);
 
       function animate() {
         currentX += (targetX - currentX) * 0.15;
@@ -1088,6 +1110,7 @@
         targetScale = 1.03;
         targetX = 0;
         targetY = 0;
+        card.style.willChange = "transform";
         if (!rafId) rafId = window.requestAnimationFrame(animate);
       });
 
@@ -1112,11 +1135,17 @@
           window.cancelAnimationFrame(rafId);
           rafId = null;
         }
+        card.style.willChange = "";
         card.style.transform = "";
       });
-
-      window.addEventListener("resize", updateBounds);
     });
+
+    if (!tiltResizeBound) {
+      window.addEventListener("resize", function () {
+        tiltBoundsUpdaters.forEach((updateBounds) => updateBounds());
+      });
+      tiltResizeBound = true;
+    }
   }
 
   function setupAvatar3D() {
@@ -1148,6 +1177,7 @@
     avatar.addEventListener("mouseenter", () => {
       updateBounds();
       targetScale = 1.05;
+      avatar.style.willChange = "transform";
       avatar.style.transition = "none";
       if (!rafId) rafId = window.requestAnimationFrame(animate);
     });
@@ -1171,6 +1201,7 @@
         window.cancelAnimationFrame(rafId);
         rafId = null;
       }
+      avatar.style.willChange = "";
       avatar.style.transition = "";
       avatar.style.transform = "";
     });
@@ -1243,6 +1274,14 @@
     const originalIconClass = btnIcon ? btnIcon.className : "";
 
     copyBtn.addEventListener("click", () => {
+      if (!email || !navigator.clipboard?.writeText) {
+        if (btnText) btnText.textContent = "Unavailable";
+        setTimeout(() => {
+          if (btnText) btnText.textContent = originalText;
+        }, 2000);
+        return;
+      }
+
       navigator.clipboard
         .writeText(email)
         .then(() => {
@@ -1266,21 +1305,36 @@
   }
 
   function setupClickSounds() {
-    const sounds = {
-      ui: new Audio("mouse-click.mp3"),
-      rocket: new Audio("rocket.mp3"),
+    const soundDefinitions = {
+      ui: { src: "mouse-click.mp3", volume: 0.4 },
+      rocket: { src: "rocket.mp3", volume: 0.5 },
     };
+    const soundCache = {};
 
-    sounds.ui.volume = 0.4;
-    sounds.rocket.volume = 0.5;
+    function getSound(key) {
+      if (soundCache[key]) {
+        return soundCache[key];
+      }
+
+      const definition = soundDefinitions[key];
+      if (!definition) {
+        return null;
+      }
+
+      const sound = new Audio(definition.src);
+      sound.volume = definition.volume;
+      sound.preload = "none";
+      soundCache[key] = sound;
+      return sound;
+    }
 
     // Priority-based mapping: put more specific selectors first
     const soundMap = [
-      { selector: ".back-to-top", sound: sounds.rocket },
+      { selector: ".back-to-top", soundKey: "rocket" },
       {
         selector:
           ".button, .link-btn, .filter-btn, .theme-toggle, .nav-scroll-btn, .site-nav a",
-        sound: sounds.ui,
+        soundKey: "ui",
       },
     ];
 
@@ -1288,10 +1342,13 @@
       const target = event.target;
       const match = soundMap.find((entry) => target.closest(entry.selector));
 
-      if (match) {
-        match.sound.currentTime = 0;
-        match.sound.play().catch(() => {});
-      }
+      if (!match) return;
+
+      const sound = getSound(match.soundKey);
+      if (!sound) return;
+
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
     });
   }
 
@@ -1325,12 +1382,4 @@
   setupClickSounds();
   setupMobileHaptics();
   registerRevealElements(document);
-
-  if (typeof AOS !== "undefined") {
-    AOS.init({
-      duration: 1200,
-      easing: "ease-in-out",
-      once: true,
-    });
-  }
 })();
