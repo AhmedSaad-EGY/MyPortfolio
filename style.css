@@ -31,19 +31,22 @@
     --btn-secondary-hover-border: rgba(68, 212, 255, 0.55);
     --btn-secondary-hover-shadow: 0 12px 28px rgba(18, 35, 72, 0.28);
     --scroll-progress-gradient: linear-gradient(90deg, #44d4ff 0%, #ff9f44 55%, #69f5c7 100%);
+    --hero-live-color-1: var(--accent-2);
+    --hero-live-color-2: var(--accent);
+    --hero-live-color-3: var(--success);
     --mobile-nav-bg: rgba(8, 13, 24, 0.92);
     --mobile-nav-deep: rgba(6, 12, 26, 0.96);
     --shine-color: rgba(180, 230, 255, 0.4);
 }
 
 :root[data-theme="light"] {
-    --bg: #f2f6ff;
-    --bg-soft: #e6edff;
-    --bg-elevated: rgba(242, 246, 255, 0.82);
-    --panel: rgba(255, 255, 255, 0.82);
-    --panel-border: rgba(12, 31, 74, 0.16);
-    --text: #102146;
-    --muted: #425c8e;
+    --bg: #e2e8f0;
+    --bg-soft: #eaf1fa;
+    --bg-elevated: rgba(226, 232, 240, 0.85);
+    --panel: rgba(255, 255, 255, 0.9);
+    --panel-border: rgba(15, 23, 42, 0.22);
+    --text: #0f172a;
+    --muted: #334155;
     --accent: #ff7a30;
     --accent-2: #1579ff;
     --success: #0ea577;
@@ -64,9 +67,15 @@
     --btn-primary-hover-shadow: 0 14px 30px rgba(255, 122, 48, 0.34);
     --btn-secondary-bg: var(--bg-soft);
     --btn-secondary-hover-bg: rgba(21, 121, 255, 0.1);
-    --btn-secondary-border: rgba(12, 31, 74, 0.2);
+    --btn-secondary-border: var(--panel-border);
     --btn-secondary-hover-border: rgba(21, 121, 255, 0.48);
     --btn-secondary-hover-shadow: 0 12px 24px rgba(21, 76, 183, 0.18);
+    --hero-live-color-1: #0056d2;
+    /* Deeper blue for visibility on light bg */
+    --hero-live-color-2: #d9480f;
+    /* Deeper orange */
+    --hero-live-color-3: #087f5b;
+    /* Deeper green */
     --scroll-progress-gradient: linear-gradient(90deg, #1579ff 0%, #ff7a30 56%, #0ea577 100%);
     --mobile-nav-bg: rgba(242, 246, 255, 0.94);
     --mobile-nav-deep: rgba(236, 243, 255, 0.96);
@@ -691,7 +700,7 @@ h2 {
 .hero {
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
-    grid-template-areas: 
+    grid-template-areas:
         "copy card"
         "actions card";
     gap: 24px;
@@ -699,7 +708,10 @@ h2 {
     position: relative;
 }
 
-.hero-copy { grid-area: copy; align-self: end; }
+.hero-copy {
+    grid-area: copy;
+    align-self: end;
+}
 
 .hero-subtext {
     margin: 22px 0 0;
@@ -764,28 +776,61 @@ h2 {
     aspect-ratio: 1 / 1;
     border-radius: 18px;
     overflow: hidden;
-    border: 4px solid var(--accent-2);
     margin-bottom: 18px;
     position: relative;
-    box-shadow: 0 0 15px -2px var(--accent-2), inset 0 0 10px 0px var(--accent-2);
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform-style: preserve-3d;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-soft);
+}
+
+/* Live Border Animation */
+.hero-avatar::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent 15%, var(--hero-live-color-1), var(--hero-live-color-2), transparent 45%);
+    animation: rotateBorder 4s linear infinite;
+    filter: blur(8px);
+    z-index: 0;
+}
+
+/* Second Live Border Animation */
+.hero-avatar-border {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 180deg, transparent 15%, var(--hero-live-color-3), var(--hero-live-color-1), transparent 45%);
+    animation: rotateBorder 4s linear infinite;
+    filter: blur(8px);
+    z-index: 1;
+    pointer-events: none;
 }
 
 .hero-avatar:hover {
     transform: scale(1.05);
 }
 
+.hero-avatar:hover::before {
+    animation-duration: 1.5s;
+}
+
+.hero-avatar:hover .hero-avatar-border {
+    animation-duration: 1.5s;
+}
+
 .hero-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: none;
+        object-fit: cover;
     position: absolute;
-    inset: 0;
-    z-index: 1;
+    inset: 3px;
+    /* Creates the border thickness */
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    z-index: 2;
     border-radius: inherit;
     background: var(--bg);
     transition: opacity 0.4s ease, transform 0.8s ease;
@@ -1510,7 +1555,7 @@ h2 {
 }
 
 /* Force the message field wrapper to fill the 1fr flexible grid row */
-.contact-form > .field-wrap:nth-of-type(3) {
+.contact-form>.field-wrap:nth-of-type(3) {
     height: 100%;
 }
 
@@ -2195,6 +2240,26 @@ h2 {
     50%,
     100% {
         opacity: 0;
+    }
+}
+
+@keyframes rotateBorder {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotateBorderReverse {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
     }
 }
 

@@ -305,11 +305,11 @@
 
     return `
             <article class="project-card reveal"
-                     data-animate="${animationName}"
-                     data-animate-duration="760ms"
-                     data-animate-delay="${animateDelay}"
-                     id="${cardId}"
-                     data-stagger>
+                    data-animate="${animationName}"
+                    data-animate-duration="760ms"
+                    data-animate-delay="${animateDelay}"
+                    id="${cardId}"
+                    data-stagger>
                 <div class="project-image">
                     ${imageHtml}
                 </div>
