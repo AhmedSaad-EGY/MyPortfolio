@@ -26,6 +26,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="style.css">
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "Person",
+        "name": "Ahmed Mohammed Saad",
+        "jobTitle": "Full-Stack .NET Developer",
+        "url": "https://ahmedsaad-egy.github.io/",
+        "image": "https://ahmedsaad-egy.github.io/ahmed.png",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Zagazig",
+            "addressRegion": "Sharqia",
+            "addressCountry": "Egypt"
+        },
+        "sameAs": [
+            "https://github.com/AhmedSaad-EGY",
+            "https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356"
+        ]
+    }
+    </script>
 </head>
 
 <body>
@@ -128,8 +150,8 @@
                     <span>Contact Me</span>
                 </a>
                 <a class="button button-secondary"
-                    href="https://drive.google.com/file/d/1I4X9Iea6eO2a7rFq9lEk4c2mwL7WCFcE/view" target="_blank"
-                    rel="noopener noreferrer" data-stagger>
+                    href="https://drive.google.com/file/d/1VPYvmQagxjAKsb6ROWxJP5QrAz2VzS_1/view?usp=sharing"
+                    target="_blank" rel="noopener noreferrer" data-stagger>
                     <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
                     <span>View my resume</span>
                 </a>
@@ -368,13 +390,16 @@
                             target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"
                                 aria-hidden="true"></i><span>GitHub</span></a>
                         <a class="contact-action button button-secondary"
-                            href="https://drive.google.com/file/d/1I4X9Iea6eO2a7rFq9lEk4c2mwL7WCFcE/view"
+                            href="https://drive.google.com/file/d/1VPYvmQagxjAKsb6ROWxJP5QrAz2VzS_1/view?usp=sharing"
                             target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-file-lines"
                                 aria-hidden="true"></i><span>View my resume</span></a>
                     </div>
                     <p>Zagazig, Sharqia, Egypt | Zip Code: 44511</p>
                 </div>
                 <form id="contactForm" class="contact-form" data-formspree-endpoint="https://formspree.io/f/mvzdolrj">
+                    <!-- Honeypot field to prevent spam -->
+                    <input type="text" name="_gotcha" style="display:none" aria-hidden="true">
+
                     <div class="field-wrap" data-stagger>
                         <input id="name" name="name" type="text" required autocomplete="name" placeholder=" ">
                         <label for="name">Name</label>
@@ -454,8 +479,9 @@
         <a class="mobile-action" href="mailto:ahmedmohammedsaad01@gmail.com" aria-label="Email">
             <i class="fa-solid fa-envelope" aria-hidden="true"></i>
         </a>
-        <a class="mobile-action" href="https://drive.google.com/file/d/1I4X9Iea6eO2a7rFq9lEk4c2mwL7WCFcE/view"
-            target="_blank" rel="noopener noreferrer" aria-label="Resume">
+        <a class="mobile-action"
+            href="https://drive.google.com/file/d/1VPYvmQagxjAKsb6ROWxJP5QrAz2VzS_1/view?usp=sharing" target="_blank"
+            rel="noopener noreferrer" aria-label="Resume">
             <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
         </a>
     </nav>
