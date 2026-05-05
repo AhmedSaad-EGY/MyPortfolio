@@ -54,9 +54,9 @@
     --bg-blob-2: #8de8ff;
     --bg-blob-3: #ffbe9a;
     --noise-opacity: 0.14;
-    --code-rain-soft: rgba(24, 94, 199, 0.62);
-    --code-rain-strong: rgba(19, 84, 196, 0.88);
-    --code-rain-glow: rgba(66, 129, 241, 0.24);
+    --code-rain-soft: rgba(16, 58, 138, 0.82);
+    --code-rain-strong: rgba(10, 46, 120, 0.96);
+    --code-rain-glow: rgba(32, 92, 196, 0.3);
     --image-overlay: rgba(14, 34, 76, 0.15);
     --shadow: 0 20px 40px rgba(33, 61, 127, 0.14);
     --btn-primary-from: #ff7a30;
@@ -678,6 +678,13 @@ h2 {
     margin-bottom: 28px;
 }
 
+.section-intro {
+    margin: 14px 0 0;
+    max-width: 760px;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
 .section-heading h2 {
     display: inline-block;
     position: relative;
@@ -720,6 +727,27 @@ h2 {
     line-height: 1.7;
 }
 
+.hero-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.hero-highlights span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
 .typing-base {
     visibility: hidden;
 }
@@ -749,6 +777,36 @@ h2 {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+.hero-achievements {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.hero-achievement {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+}
+
+.hero-achievement-value {
+    margin: 0 0 6px;
+    font-family: "Chakra Petch", sans-serif;
+    font-size: 1.55rem;
+    color: var(--accent);
+}
+
+.hero-achievement-label {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+    font-size: 0.9rem;
 }
 
 .hero-card {
@@ -887,6 +945,33 @@ h2 {
     line-height: 1.8;
 }
 
+.about-deliverables {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.deliverable-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.deliverable-card h3 {
+    margin: 0 0 10px;
+    font-family: "Chakra Petch", sans-serif;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.deliverable-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
 .about-meta {
     margin-top: 16px;
     display: grid;
@@ -974,6 +1059,10 @@ h2 {
 }
 
 @media (max-width: 980px) {
+    .about-deliverables {
+        grid-template-columns: 1fr;
+    }
+
     .skills-grid {
         grid-template-columns: 1fr;
     }
@@ -1038,7 +1127,12 @@ h2 {
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 32px;
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
 }
 
 .filter-btn {
@@ -1126,6 +1220,13 @@ h2 {
 .experience-head p {
     margin: 0 0 6px;
     color: var(--muted);
+}
+
+.experience-summary {
+    margin: 14px 0 0;
+    color: var(--text);
+    line-height: 1.7;
+    font-weight: 500;
 }
 
 .experience-list {
@@ -1345,18 +1446,61 @@ h2 {
     font-size: 1.15rem;
 }
 
+.project-meta {
+    display: grid;
+    gap: 8px;
+    margin: 12px 0 0;
+}
+
+.project-meta-line {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.45;
+}
+
+.project-meta-label {
+    flex: 0 0 auto;
+    min-width: 62px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.project-meta-value {
+    color: var(--text);
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
 .project-description {
     color: var(--muted);
-    margin: 12px 0 14px;
+    margin: 14px 0 14px;
     line-height: 1.65;
-    min-height: 78px;
+    min-height: 96px;
+}
+
+.project-stack {
+    margin-bottom: 14px;
+}
+
+.project-stack-label {
+    margin: 0 0 8px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .project-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 14px;
+    margin-bottom: 0;
 }
 
 .project-tags span {
@@ -1536,6 +1680,13 @@ h2 {
 .contact-intro {
     margin-bottom: 18px;
     font-size: 0.98rem;
+}
+
+.contact-note {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.6;
 }
 
 .contact-meta {
@@ -2283,6 +2434,10 @@ h2 {
     .contact-info,
     .contact-form {
         padding: 18px;
+    }
+
+    .hero-achievements {
+        grid-template-columns: 1fr;
     }
 
     .field-wrap {

@@ -266,6 +266,8 @@
 
   function buildProjectCard(project, index) {
     const title = escapeHtml(project.title || "Project");
+    const role = escapeHtml(project.role || "");
+    const outcome = escapeHtml(project.outcome || "");
     const description = escapeHtml(project.description || "");
     const imageLight = escapeHtml(project.image || "");
     const imageDark = escapeHtml(project.imageDark || "");
@@ -279,6 +281,12 @@
     const tagsHtml = tags
       .map((tag) => `<span>${escapeHtml(tag)}</span>`)
       .join("");
+    const projectStackHtml = tags.length
+      ? `<div class="project-stack">
+                    <p class="project-stack-label">Stack</p>
+                    <div class="project-tags">${tagsHtml}</div>
+                </div>`
+      : "";
 
     const liveBtnHtml = liveDemoLink
       ? `<a class="link-btn" href="${liveDemoLink}" target="_blank" rel="noopener noreferrer">
@@ -303,6 +311,22 @@
       imageHtml += `<img src="${imageDark}" class="image-dark" alt="${title} preview" loading="lazy" decoding="async" fetchpriority="low" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
     }
 
+    const projectMetaHtml =
+      role || outcome
+        ? `<div class="project-meta">
+                    ${
+                      role
+                        ? `<p class="project-meta-line"><span class="project-meta-label">Role</span><span class="project-meta-value">${role}</span></p>`
+                        : ""
+                    }
+                    ${
+                      outcome
+                        ? `<p class="project-meta-line"><span class="project-meta-label">Outcome</span><span class="project-meta-value">${outcome}</span></p>`
+                        : ""
+                    }
+                </div>`
+        : "";
+
     return `
             <article class="project-card reveal"
                     data-animate="${animationName}"
@@ -315,8 +339,9 @@
                 </div>
                 <div class="project-body">
                     <h3 class="project-title">${title}</h3>
+                    ${projectMetaHtml}
                     <p class="project-description">${description}</p>
-                    <div class="project-tags">${tagsHtml}</div>
+                    ${projectStackHtml}
                     <div class="project-links">
                         <a class="link-btn" href="${gitHubLink}" target="_blank" rel="noopener noreferrer">
                             <i class="fa-brands fa-github" aria-hidden="true"></i>
