@@ -513,9 +513,16 @@
   function setupContactForm() {
     if (!contactForm || !formStatus) return;
 
+    const RATE_LIMIT_KEY = "portfolio-contact-last-submit";
+    const RATE_LIMIT_MS = 60 * 1000;
+
     function setFormStatus(message, type) {
       formStatus.textContent = message;
-      formStatus.classList.remove("form-status--error", "form-status--success");
+      formStatus.classList.remove(
+        "form-status--error",
+        "form-status--success",
+        "form-status--info",
+      );
 
       if (type === "error") {
         formStatus.classList.add("form-status--error");
@@ -524,19 +531,68 @@
       if (type === "success") {
         formStatus.classList.add("form-status--success");
       }
+
+      if (type === "info") {
+        formStatus.classList.add("form-status--info");
+      }
     }
 
     function isValidEmail(value) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
     }
 
+    function getFieldLabel(name) {
+      return (
+        {
+          name: "Name",
+          email: "Email",
+          subject: "Subject",
+          message: "Message",
+        }[name] || "Field"
+      );
+    }
+
+    function getStoredTimestamp() {
+      try {
+        return Number(localStorage.getItem(RATE_LIMIT_KEY) || "0");
+      } catch (error) {
+        return 0;
+      }
+    }
+
+    function saveTimestamp(value) {
+      try {
+        localStorage.setItem(RATE_LIMIT_KEY, String(value));
+      } catch (error) {
+        // Ignore storage restrictions.
+      }
+    }
+
+    function getRemainingCooldown() {
+      const lastSubmitAt = getStoredTimestamp();
+      const elapsed = Date.now() - lastSubmitAt;
+      return Math.max(RATE_LIMIT_MS - elapsed, 0);
+    }
+
+    function formatCooldown(ms) {
+      const totalSeconds = Math.ceil(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+
+      if (minutes > 0) {
+        return `${minutes}m ${seconds}s`;
+      }
+
+      return `${seconds}s`;
+    }
+
     function updateLabelWidths() {
       fields.forEach((field) => {
-        const wrapper = field.closest(".field-wrap");
-        const label = wrapper?.querySelector("label");
-        if (label && wrapper) {
+        const control = field.closest(".field-control");
+        const label = control?.querySelector("label");
+        if (label && control) {
           const width = label.offsetWidth;
-          wrapper.style.setProperty("--lw", width + "px");
+          control.style.setProperty("--lw", width + "px");
         }
       });
     }
@@ -545,46 +601,100 @@
       const name = field.getAttribute("name");
       const value = field.value.trim();
       let isValid = true;
+      let message = "";
+      let tone = "neutral";
 
       if (!value) {
         isValid = false;
+        message = `${getFieldLabel(name)} is required.`;
       } else if (name === "email" && !isValidEmail(value)) {
         isValid = false;
+        message = "Enter a valid email address, like name@example.com.";
+      } else if (name === "name" && value.length < 2) {
+        isValid = false;
+        message = "Name must be at least 2 characters.";
+      } else if (name === "subject" && value.length < 3) {
+        isValid = false;
+        message = "Subject must be at least 3 characters.";
       } else if (name === "message" && value.length < 10) {
         isValid = false;
+        message = "Message must be at least 10 characters.";
+      } else {
+        tone = "success";
+
+        if (name === "email") {
+          message = "Email format looks good.";
+        } else if (name === "message") {
+          message = "Message looks ready to send.";
+        } else {
+          message = `${getFieldLabel(name)} looks good.`;
+        }
       }
 
       if (field.hasAttribute("required") || value.length > 0) {
-        updateFieldUI(field, isValid);
+        updateFieldUI(field, isValid, message, tone);
       }
       return isValid;
     }
 
-    function updateFieldUI(field, isValid) {
+    function updateFieldUI(field, isValid, message, tone) {
+      const wrapper = field.closest(".field-wrap");
+      const msgEl = wrapper?.querySelector(".field-msg");
+
       if (!isValid) {
         field.classList.add("field-invalid");
         field.classList.remove("field-valid");
+        if (msgEl) {
+          msgEl.textContent = message;
+          msgEl.classList.add("error");
+          msgEl.classList.remove("success");
+        }
       } else {
         field.classList.remove("field-invalid");
         field.classList.add("field-valid");
+        if (msgEl) {
+          msgEl.textContent = message;
+          msgEl.classList.remove("error");
+          msgEl.classList.toggle("success", tone === "success");
+        }
       }
     }
 
+    function clearFieldUI(field) {
+      const wrapper = field.closest(".field-wrap");
+      const msgEl = wrapper?.querySelector(".field-msg");
+      field.classList.remove("field-invalid", "field-valid");
+      if (msgEl) {
+        msgEl.textContent = "";
+        msgEl.classList.remove("error", "success");
+      }
+    }
+
+    function getInvalidFieldMessages() {
+      return fields
+        .filter((field) => !validateField(field))
+        .map((field) => {
+          const msgEl = field.closest(".field-wrap")?.querySelector(".field-msg");
+          return msgEl ? msgEl.textContent.trim() : "";
+        })
+        .filter(Boolean);
+    }
+
     function createGlowField(field) {
-      let wrapper = field.closest(".field-wrap");
-      if (!wrapper) {
-        wrapper = document.createElement("div");
-        wrapper.className = "field-wrap";
-        field.parentNode.insertBefore(wrapper, field);
-        wrapper.appendChild(field);
+      let control = field.closest(".field-control");
+      if (!control) {
+        control = document.createElement("div");
+        control.className = "field-control";
+        field.parentNode.insertBefore(control, field);
+        control.appendChild(field);
       }
 
       const glow = document.createElement("span");
       glow.className = "field-glow";
-      wrapper.appendChild(glow);
+      control.appendChild(glow);
 
       function updateGlow(event) {
-        const rect = wrapper.getBoundingClientRect();
+        const rect = control.getBoundingClientRect();
         const x = ((event.clientX - rect.left) / rect.width) * 100;
         const y = ((event.clientY - rect.top) / rect.height) * 100;
         glow.style.setProperty("--focus-x", x.toFixed(2) + "%");
@@ -608,13 +718,13 @@
 
     const fields = Array.from(
       contactForm.querySelectorAll(
-        'input[type="text"], input[type="email"], textarea',
+        'input[type="text"]:not([name="_gotcha"]), input[type="email"], textarea',
       ),
     );
     fields.forEach((field) => {
       createGlowField(field);
       field.addEventListener("input", () => {
-        if (field.classList.contains("field-invalid")) validateField(field);
+        validateField(field);
       });
     });
 
@@ -632,13 +742,29 @@
     contactForm.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      let isFormValid = true;
-      fields.forEach((field) => {
-        if (!validateField(field)) isFormValid = false;
-      });
+      const invalidMessages = getInvalidFieldMessages();
+      const isFormValid = invalidMessages.length === 0;
 
       if (!isFormValid) {
-        setFormStatus("Please correct the errors before submitting.", "error");
+        setFormStatus(
+          `Please fix the following: ${invalidMessages.join(" ")}`,
+          "error",
+        );
+        const firstInvalidField = fields.find((field) =>
+          field.classList.contains("field-invalid"),
+        );
+        if (firstInvalidField) {
+          firstInvalidField.focus();
+        }
+        return;
+      }
+
+      const remainingCooldown = getRemainingCooldown();
+      if (remainingCooldown > 0) {
+        setFormStatus(
+          `Please wait ${formatCooldown(remainingCooldown)} before sending another message.`,
+          "info",
+        );
         return;
       }
 
@@ -663,7 +789,7 @@
       }
 
       if (submitBtnText) submitBtnText.textContent = "Sending...";
-      setFormStatus("Sending message...", "success");
+      setFormStatus("Sending your message...", "info");
 
       const formData = new FormData(contactForm);
       fetch(endpoint, {
@@ -673,15 +799,16 @@
       })
         .then((response) => {
           if (response.ok) {
+            saveTimestamp(Date.now());
             setFormStatus(
-              "Message sent! I'll get back to you soon.",
+              "Your message has been sent successfully. I'll review it and get back to you shortly.",
               "success",
             );
-            fields.forEach((f) => f.classList.remove("field-valid"));
+            fields.forEach(clearFieldUI);
             contactForm.reset();
           } else {
             setFormStatus(
-              "Oops! Something went wrong. Please try again.",
+              "Your message could not be sent right now. Please try again in a moment.",
               "error",
             );
           }
