@@ -5,14 +5,12 @@
   const menuToggle = document.getElementById("menuToggle");
   const primaryNav = document.getElementById("primaryNav");
   const navLinks = Array.from(document.querySelectorAll(".site-nav a"));
-  const sectionIndicatorLabel = document.getElementById(
-    "sectionIndicatorLabel",
-  );
   const scrollProgress = document.getElementById("scrollProgress");
   const navActivePill = document.getElementById("navActivePill");
   const yearEl = document.getElementById("year");
   const projectsGrid = document.getElementById("projectsGrid");
   const filterContainer = document.getElementById("projectFilters");
+  const projectFilterSummary = document.getElementById("projectFilterSummary");
   const contactForm = document.getElementById("contactForm");
   const formStatus = document.getElementById("formStatus");
   const themeToggle = document.getElementById("themeToggle");
@@ -31,6 +29,14 @@
     "(prefers-reduced-motion: reduce)",
   ).matches;
   const finePointer = window.matchMedia("(pointer: fine)").matches;
+
+  function getHeaderOffset() {
+    const rawValue = getComputedStyle(document.documentElement)
+      .getPropertyValue("--header-offset")
+      .trim();
+    const parsedValue = Number.parseFloat(rawValue);
+    return Number.isFinite(parsedValue) ? parsedValue : 112;
+  }
 
   // Centralized Scroll Manager using requestAnimationFrame
   function initScrollManager() {
@@ -127,80 +133,6 @@
     });
   }
 
-  // --- Interactive Components ---
-  function startHeadingTyping(heading) {
-    if (!heading || heading.dataset.typingStarted === "true") return;
-
-    const base = heading.querySelector(".typing-base");
-    const overlay = heading.querySelector(".typing-overlay");
-    const rawText =
-      heading.dataset.text ||
-      (base ? base.textContent : "") ||
-      heading.textContent ||
-      "";
-    const variants = String(heading.dataset.texts || "")
-      .split("|")
-      .map((t) => t.trim())
-      .filter(Boolean);
-
-    const fullText = String(rawText).trim();
-    const textList = variants.length ? variants : fullText ? [fullText] : [];
-    if (!textList.length) {
-      heading.dataset.typingStarted = "true";
-      return;
-    }
-
-    heading.dataset.text = textList[0];
-    heading.dataset.typingStarted = "true";
-
-    if (base) base.textContent = textList[0];
-
-    const targetOverlay =
-      overlay ||
-      (function () {
-        const span = document.createElement("span");
-        span.className = "typing-overlay";
-        span.setAttribute("aria-hidden", "true");
-        heading.appendChild(span);
-        return span;
-      })();
-
-    if (prefersReducedMotion) {
-      targetOverlay.textContent = textList[0];
-      return;
-    }
-
-    const speed = 60;
-    const pause = 3000;
-    const initialDelay = 600;
-    let phraseIndex = 0;
-    const shouldLoop = textList.length > 1;
-
-    function runTyping() {
-      const phrase = textList[phraseIndex];
-      targetOverlay.textContent = "";
-      targetOverlay.classList.add("typing");
-
-      let index = 0;
-      const intervalId = window.setInterval(function () {
-        index += 1;
-        targetOverlay.textContent = phrase.slice(0, index);
-
-        if (index >= phrase.length) {
-          window.clearInterval(intervalId);
-          targetOverlay.classList.remove("typing");
-          if (!shouldLoop) {
-            return;
-          }
-          phraseIndex = (phraseIndex + 1) % textList.length;
-          window.setTimeout(runTyping, pause);
-        }
-      }, speed);
-    }
-
-    window.setTimeout(runTyping, initialDelay);
-  }
-
   // --- Reveal System ---
   function applyRevealState(element) {
     element.classList.add("in-view");
@@ -224,10 +156,6 @@
       item.classList.add("stagger-in");
     });
 
-    const textReveal = element.querySelector(
-      ".hero-title[data-typing], .section-heading h2",
-    );
-    if (textReveal) startHeadingTyping(textReveal);
   }
 
   const revealObserver =
@@ -264,6 +192,123 @@
     return [];
   }
 
+  function normalizeProjectLinks(project) {
+    if (Array.isArray(project.links) && project.links.length) {
+      return project.links
+        .filter((link) => link && link.href && link.label)
+        .map((link) => ({
+          label: link.label,
+          href: link.href,
+          icon: link.icon || "fa-solid fa-arrow-up-right-from-square",
+        }));
+    }
+
+    const links = [];
+    if (project.gitHubLink && project.gitHubLink !== "#") {
+      links.push({
+        label: "GitHub",
+        href: project.gitHubLink,
+        icon: "fa-brands fa-github",
+      });
+    }
+
+    if (project.liveDemoLink && project.liveDemoLink !== "#") {
+      links.push({
+        label: "Demo",
+        href: project.liveDemoLink,
+        icon: "fa-solid fa-arrow-up-right-from-square",
+      });
+    }
+
+    return links;
+  }
+
+  const projectFilterDefinitions = [
+    { key: "All", label: "All", match: () => true },
+    {
+      key: ".NET",
+      label: ".NET",
+      match: (project) =>
+        projectHasText(project, "ASP.NET Core") ||
+        projectHasText(project, ".NET 10") ||
+        projectHasText(project, ".NET Development"),
+    },
+    {
+      key: "Backend",
+      label: "Backend",
+      match: (project) =>
+        projectHasText(project, "Backend") ||
+        projectHasText(project, "SQL Server") ||
+        projectHasText(project, "ASP.NET Core") ||
+        projectHasText(project, "Database"),
+    },
+    {
+      key: "Full-Stack",
+      label: "Full-Stack",
+      match: (project) => projectHasText(project, "Full-Stack"),
+    },
+    {
+      key: "Frontend",
+      label: "Frontend",
+      match: (project) =>
+        projectHasText(project, "Frontend") ||
+        projectHasText(project, "HTML") ||
+        projectHasText(project, "CSS") ||
+        projectHasText(project, "JavaScript") ||
+        projectHasText(project, "Vue.js 3"),
+    },
+    {
+      key: "SQL Server",
+      label: "SQL Server",
+      match: (project) => projectHasText(project, "SQL Server"),
+    },
+    {
+      key: "Live",
+      label: "Live",
+      match: (project) =>
+        projectHasBadge(project, "Live") ||
+        normalizeProjectLinks(project).some((link) =>
+          /live|demo/i.test(link.label),
+        ),
+    },
+  ];
+
+  function projectTextTokens(project) {
+    return [
+      project.title,
+      project.role,
+      project.outcome,
+      project.description,
+      ...(Array.isArray(project.badges) ? project.badges : []),
+      ...(Array.isArray(project.tags) ? project.tags : []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+  }
+
+  function projectHasText(project, text) {
+    return projectTextTokens(project).includes(String(text).toLowerCase());
+  }
+
+  function projectHasBadge(project, text) {
+    if (!Array.isArray(project.badges)) return false;
+    return project.badges.some(
+      (badge) => String(badge).toLowerCase() === String(text).toLowerCase(),
+    );
+  }
+
+  function findProjectFilter(filterKey) {
+    return (
+      projectFilterDefinitions.find((filter) => filter.key === filterKey) ||
+      projectFilterDefinitions[0]
+    );
+  }
+
+  function projectMatchesFilter(project, filterKey) {
+    return findProjectFilter(filterKey).match(project);
+  }
+
   function buildProjectCard(project, index) {
     const title = escapeHtml(project.title || "Project");
     const role = escapeHtml(project.role || "");
@@ -271,12 +316,19 @@
     const description = escapeHtml(project.description || "");
     const imageLight = escapeHtml(project.image || "");
     const imageDark = escapeHtml(project.imageDark || "");
-    const gitHubLink = escapeHtml(project.gitHubLink || "#");
-    const liveDemoLink =
-      project.liveDemoLink && project.liveDemoLink !== "#"
-        ? escapeHtml(project.liveDemoLink)
-        : null;
-
+    const imageLightWebp = escapeHtml(project.imageWebp || "");
+    const imageDarkWebp = escapeHtml(project.imageDarkWebp || "");
+    const badges = Array.isArray(project.badges) ? project.badges : [];
+    const isFeatured =
+      String(project.title || "").toLowerCase() === "saiyad" ||
+      badges.includes("Main Project");
+    const imageIsTall =
+      Number(project.imageHeight || 0) > Number(project.imageWidth || 0);
+    const badgesHtml = badges.length
+      ? `<div class="project-badges" aria-label="Project highlights">
+                    ${badges.map((badge) => `<span>${escapeHtml(badge)}</span>`).join("")}
+                </div>`
+      : "";
     const tags = Array.isArray(project.tags) ? project.tags : [];
     const tagsHtml = tags
       .map((tag) => `<span>${escapeHtml(tag)}</span>`)
@@ -287,12 +339,26 @@
                     <div class="project-tags">${tagsHtml}</div>
                 </div>`
       : "";
-
-    const liveBtnHtml = liveDemoLink
-      ? `<a class="link-btn" href="${liveDemoLink}" target="_blank" rel="noopener noreferrer">
-            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-            <span>Demo</span>
-        </a>`
+    const projectLinks = normalizeProjectLinks(project);
+    const linksHtml = projectLinks
+      .map(
+        (link) =>
+          `<a class="link-btn" href="${escapeHtml(link.href)}" target="_blank" rel="noopener noreferrer">
+              <i class="${escapeHtml(link.icon)}" aria-hidden="true"></i>
+              <span>${escapeHtml(link.label)}</span>
+          </a>`,
+      )
+      .join("");
+    const proofPoints = Array.isArray(project.proofPoints)
+      ? project.proofPoints
+      : [];
+    const proofHtml = proofPoints.length
+      ? `<div class="project-proof">
+                    <p class="project-proof-label">Signals</p>
+                    <ul>
+                        ${proofPoints.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}
+                    </ul>
+                </div>`
       : "";
 
     const animateDelay = Math.min(index * 80, 420) + "ms";
@@ -305,10 +371,26 @@
     const cardId = "project-" + escapeHtml(project.id || index + 1);
 
     const hasAltTheme = imageDark && imageDark !== imageLight;
-    let imageHtml = `<img src="${imageLight}" class="${hasAltTheme ? "image-light" : ""}" alt="${title} preview" loading="lazy" decoding="async" fetchpriority="low" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+    const buildImage = (src, webpSrc, className = "") => {
+      if (!webpSrc) {
+        return `<img src="${src}" class="${className}" alt="${title} preview" loading="lazy" decoding="async" fetchpriority="low" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+      }
+      
+      const img = `<img src="${src}" alt="${title} preview" loading="lazy" decoding="async" fetchpriority="low" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+      return `<picture class="${className}">
+                        <source srcset="${webpSrc}" type="image/webp">
+                        ${img}
+                    </picture>`;
+    };
+
+    let imageHtml = buildImage(
+      imageLight,
+      imageLightWebp,
+      hasAltTheme ? "image-light" : "",
+    );
 
     if (hasAltTheme) {
-      imageHtml += `<img src="${imageDark}" class="image-dark" alt="${title} preview" loading="lazy" decoding="async" fetchpriority="low" width="${project.imageWidth || 1280}" height="${project.imageHeight || 720}">`;
+      imageHtml += buildImage(imageDark, imageDarkWebp, "image-dark");
     }
 
     const projectMetaHtml =
@@ -328,26 +410,24 @@
         : "";
 
     return `
-            <article class="project-card reveal"
+            <article class="project-card${isFeatured ? " project-featured" : ""} reveal"
                     data-animate="${animationName}"
                     data-animate-duration="760ms"
                     data-animate-delay="${animateDelay}"
                     id="${cardId}"
                     data-stagger>
-                <div class="project-image">
+                <div class="project-image is-loading${imageIsTall ? " project-image-tall" : ""}">
                     ${imageHtml}
                 </div>
                 <div class="project-body">
                     <h3 class="project-title">${title}</h3>
+                    ${badgesHtml}
                     ${projectMetaHtml}
                     <p class="project-description">${description}</p>
+                    ${proofHtml}
                     ${projectStackHtml}
                     <div class="project-links">
-                        <a class="link-btn" href="${gitHubLink}" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-brands fa-github" aria-hidden="true"></i>
-                            <span>GitHub</span>
-                        </a>
-                        ${liveBtnHtml}
+                        ${linksHtml}
                     </div>
                 </div>
             </article>`;
@@ -356,12 +436,19 @@
   function renderProjects(filterTag = "All") {
     if (!projectsGrid) return;
 
-    let projectData = normalizeProjects(window.projects);
+    const allProjects = normalizeProjects(window.projects);
+    let projectData = allProjects;
+    const activeFilter = findProjectFilter(filterTag);
 
-    if (filterTag !== "All") {
-      projectData = projectData.filter(
-        (p) => Array.isArray(p.tags) && p.tags.includes(filterTag),
+    if (activeFilter.key !== "All") {
+      projectData = projectData.filter((p) =>
+        projectMatchesFilter(p, activeFilter.key),
       );
+    }
+
+    if (projectFilterSummary) {
+      const projectWord = projectData.length === 1 ? "project" : "projects";
+      projectFilterSummary.textContent = `Showing ${projectData.length} ${projectWord} for ${activeFilter.label}.`;
     }
 
     if (!projectData || projectData.length === 0) {
@@ -378,6 +465,15 @@
 
     // Handle Image loading/errors
     projectsGrid.querySelectorAll("img").forEach((imageEl) => {
+      const markImageReady = () => {
+        const wrap = imageEl.closest(".project-image");
+        if (wrap) {
+          wrap.classList.remove("is-loading");
+          wrap.classList.add("image-ready", "shimmer");
+          setTimeout(() => wrap.classList.remove("shimmer"), 1300);
+        }
+      };
+
       imageEl.addEventListener("error", () => {
         imageEl.style.display = "none";
         const wrap = imageEl.closest(".project-image");
@@ -387,19 +483,18 @@
             (img) => img.style.display === "none",
           );
           if (allImages.length === hiddenImages.length) {
+            wrap.classList.remove("is-loading", "image-ready", "shimmer");
             wrap.innerHTML =
-              '<div class="missing-image">Preview unavailable</div>';
+              '<div class="missing-image"><i class="fa-regular fa-image" aria-hidden="true"></i><span>Preview unavailable</span></div>';
           }
         }
       });
 
-      imageEl.addEventListener("load", () => {
-        const wrap = imageEl.closest(".project-image");
-        if (wrap) {
-          wrap.classList.add("shimmer");
-          setTimeout(() => wrap.classList.remove("shimmer"), 1300);
-        }
-      });
+      imageEl.addEventListener("load", markImageReady);
+
+      if (imageEl.complete && imageEl.naturalWidth > 0) {
+        markImageReady();
+      }
     });
 
     registerRevealElements(projectsGrid);
@@ -410,14 +505,18 @@
     if (!filterContainer || filterContainer.dataset.initialized) return;
 
     const projectData = normalizeProjects(window.projects);
-    const allTags = projectData.flatMap((p) => p.tags || []);
-    const uniqueTags = ["All", ...new Set(allTags)];
+    const visibleFilters = projectFilterDefinitions
+      .map((filter) => ({
+        ...filter,
+        count: projectData.filter((project) => filter.match(project)).length,
+      }))
+      .filter((filter) => filter.key === "All" || filter.count > 0);
 
-    filterContainer.innerHTML = uniqueTags
-      .map(
-        (tag) =>
-          `<button class="filter-btn ${tag === "All" ? "active" : ""}" data-filter="${tag}">${tag}</button>`,
-      )
+    filterContainer.innerHTML = visibleFilters
+      .map((filter) => {
+        const countLabel = filter.key === "All" ? projectData.length : filter.count;
+        return `<button class="filter-btn ${filter.key === "All" ? "active" : ""}" data-filter="${filter.key}" aria-pressed="${filter.key === "All" ? "true" : "false"}">${filter.label} <span>${countLabel}</span></button>`;
+      })
       .join("");
 
     filterContainer.addEventListener("click", function (e) {
@@ -426,8 +525,12 @@
 
       filterContainer
         .querySelectorAll(".filter-btn")
-        .forEach((b) => b.classList.remove("active"));
+        .forEach((b) => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
       btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
       renderProjects(btn.dataset.filter);
     });
 
@@ -454,9 +557,19 @@
     const sections = Array.from(document.querySelectorAll("main section[id]"));
     if (!sections.length || !navLinks.length) return;
 
-    const linkMap = new Map(
-      navLinks.map((link) => [link.getAttribute("href") || "", link]),
-    );
+    const linkMap = new Map();
+    navLinks.forEach((link) => {
+      const href = link.getAttribute("href") || "";
+      if (href) {
+        linkMap.set(href, link);
+      }
+
+      String(link.dataset.activeSections || "")
+        .split(/\s+/)
+        .map((sectionId) => sectionId.trim())
+        .filter(Boolean)
+        .forEach((sectionId) => linkMap.set("#" + sectionId, link));
+    });
 
     const upBtn = document.getElementById("navUp");
     const downBtn = document.getElementById("navDown");
@@ -475,6 +588,15 @@
       else downBtn.classList.remove("hidden");
     }
 
+    function movePillTo(link) {
+      if (!navActivePill || !link) return;
+      const linkRect = link.getBoundingClientRect();
+      const navRect = link.parentElement.getBoundingClientRect();
+      navActivePill.style.left = linkRect.left - navRect.left + "px";
+      navActivePill.style.width = linkRect.width + "px";
+      navActivePill.style.opacity = "1";
+    }
+
     function setActiveSection(sectionId) {
       navLinks.forEach((l) => l.classList.remove("active"));
       const activeLink = linkMap.get("#" + sectionId);
@@ -482,22 +604,7 @@
       if (!activeLink) return;
 
       activeLink.classList.add("active");
-      if (sectionIndicatorLabel) {
-        const label = String(
-          activeLink.dataset.label || activeLink.textContent || "",
-        )
-          .replace(/\s+/g, " ")
-          .trim();
-        sectionIndicatorLabel.textContent = label || "Section";
-      }
-
-      if (navActivePill) {
-        const linkRect = activeLink.getBoundingClientRect();
-        const navRect = activeLink.parentElement.getBoundingClientRect();
-        navActivePill.style.left = linkRect.left - navRect.left + "px";
-        navActivePill.style.width = linkRect.width + "px";
-        navActivePill.style.opacity = "1";
-      }
+      movePillTo(activeLink);
 
       updateNavButtons(sectionId);
     }
@@ -507,6 +614,17 @@
       setActiveSection(initialHash.slice(1));
     } else {
       setActiveSection(sections[0].id);
+    }
+
+    const primaryNav = document.getElementById("primaryNav");
+    if (primaryNav && navActivePill) {
+      navLinks.forEach((link) => {
+        link.addEventListener("mouseenter", () => movePillTo(link));
+      });
+      primaryNav.addEventListener("mouseleave", () => {
+        const activeLink = primaryNav.querySelector("a.active");
+        if (activeLink) movePillTo(activeLink);
+      });
     }
 
     if (!("IntersectionObserver" in window)) return;
@@ -863,13 +981,18 @@
       root.setAttribute("data-theme", theme);
 
       if (themeLabel) {
-        themeLabel.textContent = theme === "light" ? "Dark" : "Light";
+        themeLabel.textContent =
+          theme === "light" ? "Switch to Dark" : "Switch to Light";
       }
 
       if (themeToggle) {
         themeToggle.setAttribute(
           "aria-pressed",
           theme === "light" ? "true" : "false",
+        );
+        themeToggle.setAttribute(
+          "aria-label",
+          theme === "light" ? "Switch to dark theme" : "Switch to light theme",
         );
       }
     }
@@ -999,7 +1122,14 @@
   }
 
   function setupCursorTracker() {
-    if (!cursorDot || !cursorRing || !finePointer || prefersReducedMotion)
+    const mediumWidthCursor = window.matchMedia("(max-width: 1320px)").matches;
+    if (
+      !cursorDot ||
+      !cursorRing ||
+      !finePointer ||
+      prefersReducedMotion ||
+      mediumWidthCursor
+    )
       return;
 
     const hoverSelector =
@@ -1011,6 +1141,10 @@
     let ringRafId = null;
 
     document.body.classList.add("cursor-ready");
+
+    function markCursorActive() {
+      document.body.classList.add("cursor-active");
+    }
 
     function paintDot() {
       cursorDot.style.transform = `translate3d(${pointerX}px, ${pointerY}px, 0) translate(-50%, -50%)`;
@@ -1040,15 +1174,17 @@
     window.addEventListener("mousemove", function (event) {
       pointerX = event.clientX;
       pointerY = event.clientY;
+      markCursorActive();
       paintDot();
       scheduleRingAnimation();
     });
 
     window.addEventListener("mouseout", function (event) {
-      if (event.relatedTarget || event.toElement) return;
+      if (event.relatedTarget) return;
 
       pointerX = -100;
       pointerY = -100;
+      document.body.classList.remove("cursor-active");
       paintDot();
       scheduleRingAnimation();
     });
@@ -1167,7 +1303,7 @@
         stream.style.left =
           ((i + Math.random() * 0.85) * (100 / streamCount)).toFixed(2) + "%";
         stream.style.fontSize = (11.5 + Math.random() * 4).toFixed(2) + "px";
-        stream.style.opacity = (0.62 + Math.random() * 0.34).toFixed(2);
+        stream.style.opacity = (0.2 + Math.random() * 0.14).toFixed(2);
         stream.style.setProperty(
           "--fall-distance",
           (viewportHeight + 220 + Math.random() * 240).toFixed(0) + "px",
@@ -1378,40 +1514,26 @@
       return currentIdx;
     }
 
+    function scrollToSection(section) {
+      if (!section) return;
+      window.scrollTo({
+        top: Math.max(section.offsetTop - getHeaderOffset() + 8, 0),
+        behavior: "smooth",
+      });
+    }
+
     upBtn.addEventListener("click", () => {
       const currentIdx = getCurrentSectionIndex();
       if (currentIdx > 0) {
-        window.scrollTo({
-          top: sections[currentIdx - 1].offsetTop,
-          behavior: "smooth",
-        });
+        scrollToSection(sections[currentIdx - 1]);
       }
     });
 
     downBtn.addEventListener("click", () => {
       const currentIdx = getCurrentSectionIndex();
       if (currentIdx < sections.length - 1) {
-        window.scrollTo({
-          top: sections[currentIdx + 1].offsetTop,
-          behavior: "smooth",
-        });
+        scrollToSection(sections[currentIdx + 1]);
       }
-    });
-  }
-
-  function setupBackToTop() {
-    const backToTopBtn = document.getElementById("backToTop");
-    if (!backToTopBtn) return;
-
-    scrollTasks.push(() => {
-      backToTopBtn.classList.toggle("show", window.scrollY > 500);
-    });
-
-    backToTopBtn.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
     });
   }
 
@@ -1458,8 +1580,8 @@
 
   function setupClickSounds() {
     const soundDefinitions = {
-      ui: { src: "mouse-click.mp3", volume: 0.4 },
-      rocket: { src: "rocket.mp3", volume: 0.5 },
+      ui: { src: "Sound effects/mouse-click.mp3", volume: 0.4 },
+      rocket: { src: "Sound effects/rocket.mp3", volume: 0.5 },
     };
     const soundCache = {};
 
@@ -1482,7 +1604,10 @@
 
     // Priority-based mapping: put more specific selectors first
     const soundMap = [
-      { selector: ".back-to-top", soundKey: "rocket" },
+      {
+        selector: ".back-to-top",
+        soundKey: "rocket",
+      },
       {
         selector:
           ".button, .link-btn, .filter-btn, .theme-toggle, .nav-scroll-btn, .site-nav a",
@@ -1515,6 +1640,33 @@
     });
   }
 
+  function setupBackToTop() {
+    const backToTopBtn = document.getElementById("backToTop");
+    if (!backToTopBtn) return;
+
+    function toggleBackToTop() {
+      const experienceSection = document.getElementById("experience");
+      const revealPoint = experienceSection
+        ? Math.max(experienceSection.offsetTop - getHeaderOffset(), 0)
+        : 400;
+
+      if (window.scrollY >= revealPoint) {
+        backToTopBtn.classList.remove("hidden");
+      } else {
+        backToTopBtn.classList.add("hidden");
+      }
+    }
+
+    scrollTasks.push(toggleBackToTop);
+
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  }
+
   // --- Init ---
   renderProjects();
   initScrollManager();
@@ -1529,9 +1681,9 @@
   setupCodeRain();
   setupCursorTracker();
   setupSectionNavigation();
-  setupBackToTop();
   setupCopyEmail();
   setupClickSounds();
   setupMobileHaptics();
+  setupBackToTop();
   registerRevealElements(document);
 })();

@@ -5,18 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Ahmed Mohammed Saad portfolio. Full-Stack .NET Developer experienced in ASP.NET Core, SQL Server, and modern frontend development.">
+        content="Ahmed Mohammed Saad portfolio. Backend-focused Full-Stack .NET Developer building ASP.NET Core Web APIs, SQL Server-backed systems, and Clean Architecture applications.">
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Ahmed Mohammed Saad | Full-Stack .NET Developer">
+    <meta property="og:site_name" content="Ahmed Mohammed Saad Portfolio">
+    <meta property="og:title" content="Ahmed Mohammed Saad | Backend-Focused Full-Stack .NET Developer">
     <meta property="og:description"
-        content="Portfolio of Ahmed Mohammed Saad, Full-Stack .NET Developer specialized in scalable backend architecture and modern frontend.">
-    <meta property="og:image" content="ahmed.png">
+        content="Portfolio of Ahmed Mohammed Saad, backend-focused Full-Stack .NET Developer specialized in ASP.NET Core Web APIs, SQL Server-backed systems, and Clean Architecture.">
+    <meta property="og:image" content="https://ahmedsaad.vercel.app/Images/ahmed.png">
+    <meta property="og:image:alt" content="Ahmed Mohammed Saad, Backend-Focused Full-Stack .NET Developer">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1166">
+    <meta property="og:url" content="https://ahmedsaad.vercel.app/">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:domain" content="ahmedsaad.vercel.app">
+    <meta name="twitter:title" content="Ahmed Mohammed Saad | Backend-Focused Full-Stack .NET Developer">
+    <meta name="twitter:description"
+        content="Backend-focused Full-Stack .NET Developer building ASP.NET Core Web APIs, SQL Server-backed systems, and Clean Architecture applications.">
+    <meta name="twitter:image" content="https://ahmedsaad.vercel.app/Images/ahmed.png">
+    <meta name="twitter:image:alt" content="Ahmed Mohammed Saad, Backend-Focused Full-Stack .NET Developer">
     <meta name="theme-color" content="#080d18">
 
-    <title>Ahmed Mohammed Saad | Full-Stack .NET Developer</title>
+    <link rel="canonical" href="https://ahmedsaad.vercel.app/">
+    <title>Ahmed Mohammed Saad | Backend-Focused Full-Stack .NET Developer</title>
+    <link rel="preload" as="image" href="Images/ahmed.webp" type="image/webp" fetchpriority="high">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -25,7 +38,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="Styles/style.css">
 
     <!-- Structured Data (JSON-LD) for SEO -->
     <script type="application/ld+json">
@@ -33,9 +46,9 @@
         "@context": "https://schema.org/",
         "@type": "Person",
         "name": "Ahmed Mohammed Saad",
-        "jobTitle": "Full-Stack .NET Developer",
-        "url": "https://ahmedsaad-egy.github.io/",
-        "image": "https://ahmedsaad-egy.github.io/ahmed.png",
+        "jobTitle": "Backend-Focused Full-Stack .NET Developer",
+        "url": "https://ahmedsaad.vercel.app/",
+        "image": "https://ahmedsaad.vercel.app/Images/ahmed.png",
         "address": {
             "@type": "PostalAddress",
             "addressLocality": "Zagazig",
@@ -44,18 +57,16 @@
         },
         "sameAs": [
             "https://github.com/AhmedSaad-EGY",
-            "https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356"
+            "https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356",
+            "https://ahmedsaad.vercel.app/"
         ]
     }
     </script>
 </head>
 
 <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-    <div class="section-indicator" id="sectionIndicator" aria-live="polite" aria-atomic="true">
-        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-        <span id="sectionIndicatorLabel">Home</span>
-    </div>
     <div class="page-bg" aria-hidden="true">
         <div class="bg-gradient bg-one" data-parallax="0.18"></div>
         <div class="bg-gradient bg-two" data-parallax="0.12"></div>
@@ -74,17 +85,19 @@
         <div class="header-controls">
             <nav class="site-nav" id="primaryNav">
                 <span class="nav-active-pill" id="navActivePill" aria-hidden="true"></span>
+                <span class="nav-group-label">Profile</span>
                 <a href="#home" data-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
                 <a href="#about" data-label="About"><i class="fa-solid fa-user" aria-hidden="true"></i>About</a>
                 <a href="#experience" data-label="Experience"><i class="fa-solid fa-briefcase"
                         aria-hidden="true"></i>Experience</a>
                 <a href="#now" data-label="Now"><i class="fa-solid fa-satellite-dish" aria-hidden="true"></i>Now</a>
-                <a href="#projects" data-label="Projects"><i class="fa-solid fa-layer-group"
+                <span class="nav-group-label">Proof</span>
+                <a href="#saiyad" data-label="Projects" data-active-sections="saiyad projects"><i class="fa-solid fa-layer-group"
                         aria-hidden="true"></i>Projects</a>
                 <a href="#contact" data-label="Contact"><i class="fa-solid fa-envelope"
                         aria-hidden="true"></i>Contact</a>
             </nav>
-            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark theme">
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
                 <span class="theme-icon" aria-hidden="true">
                     <svg class="icon-sun" viewBox="0 0 24 24" focusable="false">
                         <circle cx="12" cy="12" r="4"></circle>
@@ -113,70 +126,81 @@
         </div>
     </header>
 
-    <main>
+    <main id="mainContent" tabindex="-1">
         <section class="hero section reveal" id="home" data-animate="animate__fadeInUp" data-animate-duration="900ms">
             <div class="hero-copy">
-                <p class="kicker">Software Engineer</p>
-                <h2 class="hero-title" data-typing="true" data-texts="Full-Stack .NET Developer|DEPI Graduated"
-                    aria-live="polite">
-                    <span class="typing-base">Full-Stack .NET Developer</span>
-                    <span class="typing-overlay" aria-hidden="true"></span>
-                </h2>
+                <p class="kicker">Backend-focused Full-Stack .NET Developer</p>
+                <h1 class="hero-title">ASP.NET Core APIs + SQL Server Systems</h1>
+                <p class="hero-value">
+                    I design dependable ASP.NET Core Web APIs, SQL Server-backed workflows, and Clean Architecture
+                    systems, then connect them to practical full-stack user experiences.
+                </p>
                 <p class="hero-subtext">
-                    I build backend systems and full-stack .NET applications with a strong focus on API design, SQL
-                    Server architecture, and dependable product delivery.
+                    My strongest project is Saiyad: a marketplace and auction platform with 110+ RESTful API
+                    endpoints, 5 role-based workflows, and SQL Server transaction-backed auction integrity.
                 </p>
                 <div class="hero-highlights" aria-label="Selected highlights">
-                    <span>63+ stored procedures delivered</span>
-                    <span>26 SQL views built for reporting</span>
-                    <span>Full-stack delivery across API, DB, and UI</span>
+                    <span class="hero-availability"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Open to
+                        .NET backend & full-stack roles</span>
+                    <span>ASP.NET Core Web APIs</span>
+                    <span>SQL Server-backed systems</span>
+                    <span>Clean Architecture delivery</span>
                 </div>
             </div>
             <div class="hero-card reveal" data-animate="animate__zoomIn" data-animate-delay="120ms"
                 data-animate-duration="800ms">
                 <div class="hero-avatar">
                     <div class="hero-avatar-border" aria-hidden="true"></div>
-                    <img class="avatar-light" src="ahmed.png" alt="Ahmed Mohammed Saad portrait" loading="eager"
-                        fetchpriority="high" decoding="async" width="1024" height="1166">
-                    <img class="avatar-dark" src="ahmed-dark.png" alt="Ahmed Mohammed Saad portrait" loading="eager"
-                        decoding="async" width="1024" height="1166">
+                    <picture class="avatar-light">
+                        <source srcset="Images/ahmed.webp" type="image/webp">
+                        <img src="Images/ahmed.png" alt="Ahmed Mohammed Saad portrait" loading="eager"
+                            fetchpriority="high" decoding="async" width="1024" height="1166">
+                    </picture>
+                    <picture class="avatar-dark">
+                        <source srcset="Images/ahmed-dark.webp" type="image/webp">
+                        <img src="Images/ahmed-dark.png" alt="Ahmed Mohammed Saad portrait" loading="eager"
+                            decoding="async" width="1024" height="1166">
+                    </picture>
                 </div>
                 <p class="hero-name">Ahmed Mohammed Saad</p>
                 <p class="hero-card-title">Core Strengths</p>
                 <ul>
-                    <li>ASP.NET Core API design and backend implementation</li>
-                    <li>SQL Server schema design, procedures, and reporting logic</li>
-                    <li>JWT authentication, authorization, and full-stack integration</li>
+                    <li>ASP.NET Core API design, JWT authentication, and role-based authorization</li>
+                    <li>SQL Server schema design, EF Core, procedures, and transaction-safe workflows</li>
+                    <li>Full-stack integration across backend services and Vanilla JavaScript SPA interfaces</li>
                 </ul>
             </div>
             <div class="hero-actions">
-                <a class="button button-primary" href="#projects" data-stagger>
-                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    <span>View Projects</span>
-                </a>
-                <a class="button button-secondary" href="#contact" data-stagger>
+                <a class="button button-primary" href="#contact" data-stagger>
                     <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
                     <span>Contact Me</span>
                 </a>
-                <a class="button button-secondary"
-                    href="https://drive.google.com/file/d/1VPYvmQagxjAKsb6ROWxJP5QrAz2VzS_1/view?usp=sharing"
-                    target="_blank" rel="noopener noreferrer" data-stagger>
-                    <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
-                    <span>View Resume</span>
+                <a class="button button-secondary" href="#saiyad" data-stagger>
+                    <i class="fa-solid fa-fish" aria-hidden="true"></i>
+                    <span>View Saiyad</span>
+                </a>
+                <a class="button button-secondary" href="Resume/Ahmed_Mohammed_Saad_CV.pdf"
+                    download="Ahmed_Mohammed_Saad_CV.pdf" data-stagger>
+                    <i class="fa-solid fa-download" aria-hidden="true"></i>
+                    <span>Download Resume</span>
+                </a>
+                <a class="button button-secondary" href="#projects" data-stagger>
+                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                    <span>View Projects</span>
                 </a>
             </div>
             <div class="hero-achievements">
                 <article class="hero-achievement" data-stagger>
-                    <p class="hero-achievement-value">63+</p>
-                    <p class="hero-achievement-label">SQL stored procedures implemented</p>
-                </article>
-                <article class="hero-achievement" data-stagger>
-                    <p class="hero-achievement-value">26</p>
-                    <p class="hero-achievement-label">Reporting views designed for operational data access</p>
+                    <p class="hero-achievement-value">110+</p>
+                    <p class="hero-achievement-label">RESTful API endpoints implemented in Saiyad</p>
                 </article>
                 <article class="hero-achievement" data-stagger>
                     <p class="hero-achievement-value">5</p>
-                    <p class="hero-achievement-label">End-to-end projects completed across API, database, and UI layers</p>
+                    <p class="hero-achievement-label">Role-based user experiences built</p>
+                </article>
+                <article class="hero-achievement" data-stagger>
+                    <p class="hero-achievement-value">63+</p>
+                    <p class="hero-achievement-label">SQL stored procedures delivered in Khidma</p>
                 </article>
             </div>
         </section>
@@ -184,30 +208,30 @@
         <section class="section reveal" id="about" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">About</p>
-                <h2 aria-live="polite">
-                    <span class="typing-base">Who I Am</span>
-                    <span class="typing-overlay" aria-hidden="true"></span>
-                </h2>
+                <h2>Who I Am</h2>
             </div>
             <div class="about-panel">
                 <p>
-                    I am Ahmed Mohammed Saad, a Full-Stack .NET Developer with hands-on experience building complete
-                    applications from database design to frontend delivery. My strongest work is in backend engineering,
-                    RESTful APIs, SQL Server design, and turning business requirements into reliable production-ready
-                    features.
+                    I am Ahmed Mohammed Saad, a backend-focused Full-Stack .NET Developer who builds complete systems
+                    from database design and API architecture through frontend integration. My strongest work is in
+                    ASP.NET Core Web APIs, SQL Server-backed business logic, Clean Architecture, authentication, and
+                    role-based workflows that turn product requirements into dependable application features.
                 </p>
                 <div class="about-deliverables">
                     <article class="deliverable-card" data-stagger>
                         <h3>Backend Systems</h3>
-                        <p>APIs, business logic, authentication, and layered architecture built for maintainability.</p>
+                        <p>ASP.NET Core APIs, business logic, JWT authentication, and layered architecture built for
+                            maintainability.</p>
                     </article>
                     <article class="deliverable-card" data-stagger>
                         <h3>Database Engineering</h3>
-                        <p>SQL Server schema design, stored procedures, reporting views, and performance-minded data structures.</p>
+                        <p>SQL Server schema design, EF Core integration, stored procedures, reporting views, and
+                            transaction-backed workflows.</p>
                     </article>
                     <article class="deliverable-card" data-stagger>
                         <h3>Full-Stack Delivery</h3>
-                        <p>End-to-end feature work that connects backend services, frontend flows, and real user needs.</p>
+                        <p>End-to-end feature work that connects backend services, SPA frontend flows, and real user
+                            needs.</p>
                     </article>
                 </div>
                 <div class="skills-grid">
@@ -220,6 +244,8 @@
                             <span>HTML5</span>
                             <span>CSS3</span>
                             <span>JavaScript</span>
+                            <span>Vanilla JavaScript</span>
+                            <span>JavaScript ES6+</span>
                             <span>Bootstrap 5</span>
                             <span>Vue.js</span>
                         </div>
@@ -263,22 +289,23 @@
                 <h3>Skills Proof</h3>
                 <div class="skills-proof-grid">
                     <article class="proof-card" data-stagger>
+                        <p class="proof-title">Full-Stack Marketplace</p>
+                        <p class="proof-text">Built Saiyad with 110+ API endpoints, 5 role-based user flows, wallet
+                            logic,
+                            auctions, and SQL Server transaction-backed integrity.</p>
+                        <a class="proof-link" href="#saiyad">View case study</a>
+                    </article>
+                    <article class="proof-card" data-stagger>
                         <p class="proof-title">Database Architecture</p>
                         <p class="proof-text">Designed the Khidma data layer with 63 stored procedures and 26 SQL views
                             for reporting, workflows, and relational integrity.</p>
-                        <a class="proof-link" href="#project-1">View case study</a>
-                    </article>
-                    <article class="proof-card" data-stagger>
-                        <p class="proof-title">Frontend Delivery</p>
-                        <p class="proof-text">Built a responsive landing page with clean structure, stronger UX flow,
-                            and a performance-first front-end implementation.</p>
-                        <a class="proof-link" href="#project-2">View case study</a>
+                        <a class="proof-link" href="#projects">View case study</a>
                     </article>
                     <article class="proof-card" data-stagger>
                         <p class="proof-title">SPA Engineering</p>
                         <p class="proof-text">Delivered a Vue 3 single-page storefront with dynamic catalog browsing,
                             cart flows, and client-side interaction patterns.</p>
-                        <a class="proof-link" href="#project-3">View case study</a>
+                        <a class="proof-link" href="#projects">View case study</a>
                     </article>
                 </div>
             </div>
@@ -299,10 +326,7 @@
         <section class="section reveal" id="experience" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Experience</p>
-                <h2>
-                    <span class="typing-base">Professional Experience</span>
-                    <span class="typing-overlay" aria-hidden="true"></span>
-                </h2>
+                <h2>Professional Experience</h2>
             </div>
             <article class="experience-card">
                 <div class="experience-head">
@@ -311,7 +335,9 @@
                     <p>October 2025 - Present</p>
                 </div>
                 <p class="experience-summary">
-                    Built practical experience across backend APIs, relational database design, authentication, and integrated full-stack implementation while delivering team-based project work in the DEPI program.
+                    Built practical experience across backend APIs, relational database design, authentication,
+                    role-based authorization, and integrated full-stack implementation while delivering team-based
+                    project work in the DEPI program.
                 </p>
                 <ul class="experience-list">
                     <li>Designed and implemented RESTful APIs using ASP.NET Core and Entity Framework Core.</li>
@@ -321,21 +347,22 @@
                         support.</li>
                     <li>Integrated frontend features with backend APIs and supported end-to-end delivery across the
                         stack.</li>
-                    <li>Collaborated with teammates on implementation planning, integration, and feature completion.</li>
+                    <li>Collaborated with teammates on implementation planning, integration, and feature completion.
+                    </li>
                 </ul>
             </article>
             <div class="outcomes-strip">
                 <article class="outcome-card" data-stagger>
-                    <p class="outcome-value" data-count="63" data-suffix="+">63+</p>
-                    <p class="outcome-label">Stored procedures delivered</p>
-                </article>
-                <article class="outcome-card" data-stagger>
-                    <p class="outcome-value" data-count="26">26</p>
-                    <p class="outcome-label">SQL views crafted for reporting</p>
+                    <p class="outcome-value" data-count="110" data-suffix="+">110+</p>
+                    <p class="outcome-label">Saiyad API endpoints implemented</p>
                 </article>
                 <article class="outcome-card" data-stagger>
                     <p class="outcome-value" data-count="5">5</p>
-                    <p class="outcome-label">End-to-end projects shipped</p>
+                    <p class="outcome-label">Role-based user workflows shipped</p>
+                </article>
+                <article class="outcome-card" data-stagger>
+                    <p class="outcome-value" data-count="63" data-suffix="+">63+</p>
+                    <p class="outcome-label">Khidma stored procedures delivered</p>
                 </article>
             </div>
         </section>
@@ -344,10 +371,7 @@
             data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Now</p>
-                <h2>
-                    <span class="typing-base">Current Availability</span>
-                    <span class="typing-overlay" aria-hidden="true"></span>
-                </h2>
+                <h2>Current Availability</h2>
             </div>
             <div class="now-grid">
                 <article class="now-card now-status">
@@ -355,11 +379,12 @@
                         Opportunities</p>
                     <h3>Open to Full-Stack .NET roles, backend engineering positions, and selected freelance work.</h3>
                     <p>
-                        I am currently building my DEPI graduation project, Saiyad, a SaaS platform that connects
-                        fishermen, customers, seafood traders, bait shops, and boat rentals in one operational system.
-                        The platform also includes an auction workflow that helps connect traders directly with
-                        restaurants and supports fairer marketplace access.</p>
+                        I built Saiyad as a full-stack marketplace and auction platform for the fishing community,
+                        connecting customers, fishermen, bait sellers, auctioneers, and admins through product, cart,
+                        checkout, order, auction, wallet, admin, authentication, and role-based workflows.</p>
                     <div class="now-meta">
+                        <span><i class="fa-solid fa-bullseye" aria-hidden="true"></i>Looking for backend or Full-Stack
+                            .NET roles</span>
                         <span><i class="fa-regular fa-clock" aria-hidden="true"></i>Start in 1-2 weeks</span>
                         <span><i class="fa-solid fa-earth-africa" aria-hidden="true"></i>Remote or hybrid</span>
                         <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Egypt (GMT+2)</span>
@@ -371,7 +396,7 @@
                     <ul class="now-list">
                         <li>Clean Architecture with ASP.NET Core</li>
                         <li>JWT security and role-based permissions</li>
-                        <li>SQL Server performance and query design</li>
+                        <li>SQL Server transactions, performance, and query design</li>
                         <li>Integrated full-stack feature delivery</li>
                         <li>Professional UI refinement for production apps</li>
                     </ul>
@@ -388,96 +413,200 @@
             </div>
         </section>
 
+        <section class="section reveal saiyad-case" id="saiyad" data-animate="animate__fadeInUp"
+            data-animate-duration="850ms">
+            <div class="section-heading">
+                <p class="kicker">Main Case Study</p>
+                <h2>Saiyad Engineering Story</h2>
+                <p class="section-intro">A full-stack marketplace and auction platform for the fishing community, built
+                    around API-first backend delivery, role-based workflows, and transaction-safe auction logic.</p>
+                <nav class="case-jump-links" aria-label="Saiyad quick links">
+                    <a href="#saiyad-architecture">Architecture</a>
+                    <a href="#saiyad-modules">Modules</a>
+                    <a href="#projects">Project Card</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+            </div>
+
+            <div class="case-study-grid">
+                <article class="case-summary" data-stagger>
+                    <p class="case-label">My Role</p>
+                    <h3>Full-stack .NET implementation across backend, database, authentication, and SPA integration.
+                    </h3>
+                    <p>
+                        Saiyad connects customers, fishermen, bait sellers, auctioneers, and admins through product,
+                        cart, checkout, order, auction, wallet, admin, authentication, and role-based workflows. The
+                        backend uses ASP.NET Core (.NET 10), SQL Server, EF Core, Clean Architecture, JWT
+                        authentication, role-based authorization, and SQL Server transactions.
+                    </p>
+                    <div class="case-actions">
+                        <a class="button button-primary" href="https://saiyad-eg.vercel.app" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                            <span>Live Demo</span>
+                        </a>
+                        <a class="button button-secondary" href="https://github.com/AhmedSaad-EGY/Saiyad"
+                            target="_blank" rel="noopener noreferrer">
+                            <i class="fa-brands fa-github" aria-hidden="true"></i>
+                            <span>Backend Repo</span>
+                        </a>
+                        <a class="button button-secondary" href="https://github.com/AhmedSaad-EGY/Saiyad_UI"
+                            target="_blank" rel="noopener noreferrer">
+                            <i class="fa-brands fa-github" aria-hidden="true"></i>
+                            <span>UI Repo</span>
+                        </a>
+                    </div>
+                </article>
+
+                <div class="case-proof-grid" aria-label="Saiyad proof points">
+                    <article class="case-proof" data-stagger>
+                        <p class="case-proof-value">110+</p>
+                        <p class="case-proof-label">RESTful API endpoints</p>
+                    </article>
+                    <article class="case-proof" data-stagger>
+                        <p class="case-proof-value">5</p>
+                        <p class="case-proof-label">Role-based workflows</p>
+                    </article>
+                    <article class="case-proof" data-stagger>
+                        <p class="case-proof-value">2</p>
+                        <p class="case-proof-label">Public GitHub repos</p>
+                    </article>
+                    <article class="case-proof" data-stagger>
+                        <p class="case-proof-value">SQL</p>
+                        <p class="case-proof-label">Transaction-backed auction integrity</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="architecture-map" id="saiyad-architecture" aria-label="Saiyad architecture overview">
+                <article class="arch-node" data-stagger>
+                    <i class="fa-solid fa-window-maximize" aria-hidden="true"></i>
+                    <h3>Vanilla JavaScript SPA</h3>
+                    <p>JavaScript ES6+ and Bootstrap frontend for marketplace, cart, checkout, auctions, and role flows.
+                    </p>
+                </article>
+                <span class="arch-flow" aria-hidden="true"></span>
+                <article class="arch-node arch-core" data-stagger>
+                    <i class="fa-solid fa-server" aria-hidden="true"></i>
+                    <h3>ASP.NET Core API</h3>
+                    <p>.NET 10 backend with Clean Architecture, JWT authentication, and role-based authorization.</p>
+                </article>
+                <span class="arch-flow" aria-hidden="true"></span>
+                <article class="arch-node" data-stagger>
+                    <i class="fa-solid fa-database" aria-hidden="true"></i>
+                    <h3>SQL Server + EF Core</h3>
+                    <p>Relational persistence, wallet logic, order workflows, and transaction-safe auction operations.
+                    </p>
+                </article>
+            </div>
+
+            <div class="case-modules" id="saiyad-modules" aria-label="Saiyad modules">
+                <span data-stagger>Products</span>
+                <span data-stagger>Cart</span>
+                <span data-stagger>Checkout</span>
+                <span data-stagger>Orders</span>
+                <span data-stagger>Auctions</span>
+                <span data-stagger>Wallet</span>
+                <span data-stagger>Admin</span>
+                <span data-stagger>Authentication</span>
+                <span data-stagger>Role-based workflows</span>
+            </div>
+        </section>
+
         <section class="section reveal" id="projects" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Case Studies</p>
-                <h2>
-                    <span class="typing-base">Featured Work</span>
-                    <span class="typing-overlay" aria-hidden="true"></span>
-                </h2>
-                <p class="section-intro">Selected projects that reflect my work across backend engineering, database architecture, and full-stack implementation.</p>
+                <h2>Featured Work</h2>
+                <p class="section-intro">Selected projects that reflect my work across backend engineering, database
+                    architecture, and full-stack implementation.</p>
             </div>
             <div class="project-filters" id="projectFilters"></div>
+            <p class="project-filter-summary" id="projectFilterSummary" aria-live="polite"></p>
             <div class="projects-grid" id="projectsGrid" data-stagger></div>
         </section>
 
         <section class="section reveal" id="contact" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Let&apos;s Work</p>
-                <h2>
-                    <span class="typing-base">Contact Me</span>
-                    <span class="typing-overlay" aria-hidden="true"></span>
-                </h2>
+                <h2>Contact Me</h2>
             </div>
             <div class="contact-layout">
                 <div class="contact-info" data-stagger>
-                    <p class="contact-intro">For hiring, freelance work, or product collaboration, email is the best
-                        way to reach me.</p>
+                    <p class="contact-intro">For hiring, freelance work, or product collaboration, send a short note
+                        with the role, project scope, timeline, or the best time to talk.</p>
                     <div class="contact-meta" aria-label="Contact availability">
                         <span><i class="fa-regular fa-clock" aria-hidden="true"></i>Replies within 24 hours</span>
                         <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Egypt, GMT+2</span>
                     </div>
                     <div class="contact-actions">
-                        <a class="contact-action button button-secondary" href="mailto:ahmedmohammedsaad01@gmail.com"
+                        <a class="contact-action button button-primary" href="mailto:ahmedmohammedsaad01@gmail.com"
                             target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-envelope"
                                 aria-hidden="true"></i><span>Email Me</span></a>
-                        <a class="contact-action button button-secondary"
-                            href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
-                            rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"
-                                aria-hidden="true"></i><span>LinkedIn</span></a>
-                        <a class="contact-action button button-secondary"
-                            href="https://drive.google.com/file/d/1VPYvmQagxjAKsb6ROWxJP5QrAz2VzS_1/view?usp=sharing"
-                            target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-file-lines"
-                                aria-hidden="true"></i><span>View Resume</span></a>
                         <button class="contact-action button button-secondary" id="copyEmailBtn"
                             data-email="ahmedmohammedsaad01@gmail.com" type="button">
                             <i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy Email</span>
                         </button>
-                        <a class="contact-action button button-secondary" href="https://github.com/AhmedSaad-EGY"
-                            target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"
-                                aria-hidden="true"></i><span>GitHub</span></a>
-                        <a class="contact-action button button-secondary" href="https://wa.link/rm627m" target="_blank"
-                            rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"
+                        <a class="contact-action button button-secondary" href="https://wa.me/201026162117"
+                            target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"
                                 aria-hidden="true"></i><span>WhatsApp</span></a>
+                        <a class="contact-action button button-secondary"
+                            href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
+                            rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"
+                                aria-hidden="true"></i><span>LinkedIn</span></a>
+                        <a class="contact-action button button-secondary" href="Resume/Ahmed_Mohammed_Saad_CV.pdf"
+                            download="Ahmed_Mohammed_Saad_CV.pdf"><i class="fa-solid fa-download"
+                                aria-hidden="true"></i><span>Download Resume</span></a>
                     </div>
-                    <p class="contact-note">Additional social links are available in the footer.</p>
+                    <p class="contact-note">Fastest paths: email for formal opportunities, WhatsApp for quick follow-up.
+                    </p>
                 </div>
-                <form id="contactForm" class="contact-form" data-formspree-endpoint="https://formspree.io/f/mvzdolrj">
+                <form id="contactForm" class="contact-form" data-formspree-endpoint="https://formspree.io/f/mvzdolrj"
+                    aria-label="Contact form">
                     <!-- Honeypot field to prevent spam -->
                     <input type="text" name="_gotcha" style="display:none" aria-hidden="true">
+                    <p class="form-helper">Tell me what you need, your timeline, and the best way to reply. I usually
+                        respond within 24 hours.</p>
 
                     <div class="field-wrap" data-stagger>
                         <div class="field-control">
-                            <input id="name" name="name" type="text" required autocomplete="name" placeholder=" ">
+                            <input id="name" name="name" type="text" required autocomplete="name" placeholder=" "
+                                aria-describedby="nameHelp nameMsg">
                             <label for="name">Name</label>
                         </div>
-                        <span class="field-msg" aria-live="polite"></span>
+                        <p class="field-help" id="nameHelp">Your full name or the company/contact name.</p>
+                        <span class="field-msg" id="nameMsg" aria-live="polite"></span>
                     </div>
 
                     <div class="field-wrap" data-stagger>
                         <div class="field-control">
                             <input id="email" name="email" type="email" required autocomplete="email" inputmode="email"
-                                placeholder=" ">
+                                placeholder=" " aria-describedby="emailHelp emailMsg">
                             <label for="email">Email</label>
                         </div>
-                        <span class="field-msg" aria-live="polite"></span>
+                        <p class="field-help" id="emailHelp">Use the email address where I should send my reply.</p>
+                        <span class="field-msg" id="emailMsg" aria-live="polite"></span>
                     </div>
 
                     <div class="field-wrap" data-stagger>
                         <div class="field-control">
-                            <input id="subject" name="subject" type="text" required placeholder=" ">
+                            <input id="subject" name="subject" type="text" required placeholder=" "
+                                aria-describedby="subjectHelp subjectMsg">
                             <label for="subject">Subject</label>
                         </div>
-                        <span class="field-msg" aria-live="polite"></span>
+                        <p class="field-help" id="subjectHelp">Example: .NET Backend Role, API Project, or Freelance
+                            Work.</p>
+                        <span class="field-msg" id="subjectMsg" aria-live="polite"></span>
                     </div>
 
                     <div class="field-wrap" data-stagger>
                         <div class="field-control">
-                            <textarea id="message" name="message" rows="5" required autocomplete="off"
-                                placeholder=" "></textarea>
+                            <textarea id="message" name="message" rows="5" required autocomplete="off" placeholder=" "
+                                aria-describedby="messageHelp messageMsg"></textarea>
                             <label for="message">Message</label>
                         </div>
-                        <span class="field-msg" aria-live="polite"></span>
+                        <p class="field-help" id="messageHelp">Share the goal, required skills, deadline, and any useful
+                            links.</p>
+                        <span class="field-msg" id="messageMsg" aria-live="polite"></span>
                     </div>
 
                     <button type="submit" class="button button-primary" data-stagger>
@@ -495,7 +624,7 @@
             <div class="footer-top">
                 <div class="footer-brand">
                     <p class="footer-name">Ahmed Mohammed Saad</p>
-                    <p class="footer-tagline">Full-Stack .NET Developer</p>
+                    <p class="footer-tagline">Available for backend and Full-Stack .NET roles</p>
                 </div>
                 <div class="footer-links">
                     <a href="mailto:ahmedmohammedsaad01@gmail.com" data-tooltip="Send me an email"
@@ -506,48 +635,47 @@
                     <a href="https://github.com/AhmedSaad-EGY" target="_blank" rel="noopener noreferrer"
                         data-tooltip="View my GitHub projects" aria-label="View my GitHub projects"><i
                             class="fa-brands fa-github" aria-hidden="true"></i></a>
-                    <a href="https://www.facebook.com/ahmed.saad.120234/" target="_blank" rel="noopener noreferrer"
-                        data-tooltip="Follow on Facebook" aria-label="Follow on Facebook"><i
-                            class="fa-brands fa-facebook" aria-hidden="true"></i></a>
-                    <a href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer"
+                    <a href="https://ahmedsaad.vercel.app/" target="_blank" rel="noopener noreferrer"
+                        data-tooltip="View portfolio" aria-label="View portfolio"><i class="fa-solid fa-globe"
+                            aria-hidden="true"></i></a>
+                    <a href="https://wa.me/201026162117" target="_blank" rel="noopener noreferrer"
                         data-tooltip="Chat on WhatsApp" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"
                             aria-hidden="true"></i></a>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p class="footer-copy">&copy; <span id="year"></span> Ahmed Mohammed Saad. All rights reserved.</p>
-                <p class="footer-made">Made with <i class="fa-solid fa-heart heart-icon" aria-hidden="true"></i> by
-                    Ahmed</p>
+                <p class="footer-made">Building API-first systems with ASP.NET Core, SQL Server, and Clean Architecture.
+                </p>
             </div>
         </div>
     </footer>
     <nav class="mobile-actions" aria-label="Quick actions">
-        <a class="mobile-action" href="https://www.facebook.com/ahmed.saad.120234/" target="_blank"
-            rel="noopener noreferrer" aria-label="Facebook">
-            <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+        <a class="mobile-action" href="mailto:ahmedmohammedsaad01@gmail.com" aria-label="Email">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
         </a>
-        <a class="mobile-action" href="https://wa.link/rm627m" target="_blank" rel="noopener noreferrer"
+        <a class="mobile-action" href="https://wa.me/201026162117" target="_blank" rel="noopener noreferrer"
             aria-label="WhatsApp">
             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-        </a>
-        <a class="mobile-action" href="https://github.com/AhmedSaad-EGY" target="_blank" rel="noopener noreferrer"
-            aria-label="GitHub">
-            <i class="fa-brands fa-github" aria-hidden="true"></i>
-            <span class="notification-dot" aria-hidden="true"></span>
         </a>
         <a class="mobile-action" href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
             rel="noopener noreferrer" aria-label="LinkedIn">
             <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
         </a>
-        <a class="mobile-action" href="mailto:ahmedmohammedsaad01@gmail.com" aria-label="Email">
-            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        <a class="mobile-action" href="https://github.com/AhmedSaad-EGY" target="_blank" rel="noopener noreferrer"
+            aria-label="GitHub">
+            <i class="fa-brands fa-github" aria-hidden="true"></i>
         </a>
-        <a class="mobile-action"
-            href="https://drive.google.com/file/d/1VPYvmQagxjAKsb6ROWxJP5QrAz2VzS_1/view?usp=sharing" target="_blank"
-            rel="noopener noreferrer" aria-label="Resume">
-            <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+        <a class="mobile-action" href="Resume/Ahmed_Mohammed_Saad_CV.pdf" download="Ahmed_Mohammed_Saad_CV.pdf"
+            aria-label="Download Resume">
+            <i class="fa-solid fa-download" aria-hidden="true"></i>
         </a>
     </nav>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top hidden" id="backToTop" type="button" aria-label="Scroll to top">
+        <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+    </button>
 
     <!-- Smart Section Navigation -->
     <div class="section-nav-container" id="sectionNav">
@@ -558,14 +686,10 @@
             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
         </button>
     </div>
+    
 
-    <!-- Back to Top Rocket Button -->
-    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">
-        <i class="fa-solid fa-rocket" aria-hidden="true"></i>
-    </button>
-
-    <script src="projects.js"></script>
-    <script src="main.js"></script>
+    <script src="Javascript/projects.js"></script>
+    <script src="Javascript/main.js"></script>
 </body>
 
 </html>
