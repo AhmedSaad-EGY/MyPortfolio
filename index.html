@@ -68,13 +68,8 @@
     <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
     <div class="page-bg" aria-hidden="true">
-        <div class="bg-gradient bg-one" data-parallax="0.18"></div>
-        <div class="bg-gradient bg-two" data-parallax="0.12"></div>
-        <div class="bg-gradient bg-three" data-parallax="0.15"></div>
+        <canvas class="architecture-bg" id="architectureBg"></canvas>
     </div>
-    <div class="code-rain-layer bg-noise" id="codeRain" aria-hidden="true"></div>
-    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
-    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
     <header class="site-header">
         <a class="brand" href="#home">
@@ -130,10 +125,10 @@
         <section class="hero section reveal" id="home" data-animate="animate__fadeInUp" data-animate-duration="900ms">
             <div class="hero-copy">
                 <p class="kicker">Backend-focused Full-Stack .NET Developer</p>
-                <h1 class="hero-title">ASP.NET Core APIs + SQL Server Systems</h1>
+                <h1 class="hero-title">Ahmed Mohammed Saad</h1>
                 <p class="hero-value">
-                    I design dependable ASP.NET Core Web APIs, SQL Server-backed workflows, and Clean Architecture
-                    systems, then connect them to practical full-stack user experiences.
+                    Backend-focused Full-Stack .NET Developer building ASP.NET Core APIs, SQL Server workflows, and
+                    Clean Architecture systems that are practical to ship and maintain.
                 </p>
                 <p class="hero-subtext">
                     My strongest project is Saiyad: a marketplace and auction platform with 110+ RESTful API
@@ -176,18 +171,19 @@
                     <span>Contact Me</span>
                 </a>
                 <a class="button button-secondary" href="#saiyad" data-stagger>
-                    <i class="fa-solid fa-fish" aria-hidden="true"></i>
+                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
                     <span>View Saiyad</span>
                 </a>
-                <a class="button button-secondary" href="Resume/Ahmed_Mohammed_Saad_CV.pdf"
-                    download="Ahmed_Mohammed_Saad_CV.pdf" data-stagger>
-                    <i class="fa-solid fa-download" aria-hidden="true"></i>
-                    <span>Download Resume</span>
-                </a>
-                <a class="button button-secondary" href="#projects" data-stagger>
-                    <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-                    <span>View Projects</span>
-                </a>
+                <div class="hero-links" data-stagger>
+                    <a href="Resume/Ahmed_Mohammed_Saad_CV.pdf" download="Ahmed_Mohammed_Saad_CV.pdf">
+                        <i class="fa-solid fa-download" aria-hidden="true"></i>
+                        <span>Resume</span>
+                    </a>
+                    <a href="#projects">
+                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                        <span>All projects</span>
+                    </a>
+                </div>
             </div>
             <div class="hero-achievements">
                 <article class="hero-achievement" data-stagger>
@@ -528,44 +524,67 @@
         <section class="section reveal" id="contact" data-animate="animate__fadeInUp" data-animate-duration="850ms">
             <div class="section-heading">
                 <p class="kicker">Let&apos;s Work</p>
-                <h2>Contact Me</h2>
+                <h2>Start the Conversation</h2>
+                <p class="section-intro">Send the role, project scope, or product problem. I&apos;ll reply with a useful
+                    next step, not a vague &quot;thanks.&quot;</p>
             </div>
             <div class="contact-layout">
                 <div class="contact-info" data-stagger>
-                    <p class="contact-intro">For hiring, freelance work, or product collaboration, send a short note
-                        with the role, project scope, timeline, or the best time to talk.</p>
+                    <p class="contact-eyebrow">Available for selected work</p>
+                    <h3>Backend-heavy .NET roles, APIs, SQL Server systems, and full-stack product delivery.</h3>
+                    <p class="contact-intro">The fastest way to get a good reply is to include the work type, timeline,
+                        and the best channel for follow-up.</p>
                     <div class="contact-meta" aria-label="Contact availability">
                         <span><i class="fa-regular fa-clock" aria-hidden="true"></i>Replies within 24 hours</span>
                         <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Egypt, GMT+2</span>
+                        <span><i class="fa-solid fa-briefcase" aria-hidden="true"></i>Remote or hybrid</span>
+                    </div>
+                    <div class="contact-routes" aria-label="Best contact routes">
+                        <div class="contact-route">
+                            <span class="contact-route-label">Best for roles</span>
+                            <span>Email or LinkedIn with job details</span>
+                        </div>
+                        <div class="contact-route">
+                            <span class="contact-route-label">Best for quick follow-up</span>
+                            <span>WhatsApp with context and timeline</span>
+                        </div>
+                        <div class="contact-route">
+                            <span class="contact-route-label">Useful to include</span>
+                            <span>Stack, scope, start date, and links</span>
+                        </div>
                     </div>
                     <div class="contact-actions">
                         <a class="contact-action button button-primary" href="mailto:ahmedmohammedsaad01@gmail.com"
                             target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-envelope"
                                 aria-hidden="true"></i><span>Email Me</span></a>
-                        <button class="contact-action button button-secondary" id="copyEmailBtn"
-                            data-email="ahmedmohammedsaad01@gmail.com" type="button">
-                            <i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy Email</span>
-                        </button>
-                        <a class="contact-action button button-secondary" href="https://wa.me/201026162117"
-                            target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"
-                                aria-hidden="true"></i><span>WhatsApp</span></a>
                         <a class="contact-action button button-secondary"
                             href="https://www.linkedin.com/in/ahmed-mohamed-saad-b57695356" target="_blank"
                             rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"
                                 aria-hidden="true"></i><span>LinkedIn</span></a>
+                        <a class="contact-action button button-secondary" href="https://wa.me/201026162117"
+                            target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"
+                                aria-hidden="true"></i><span>WhatsApp</span></a>
+                        <button class="contact-action button button-secondary" id="copyEmailBtn"
+                            data-email="ahmedmohammedsaad01@gmail.com" type="button">
+                            <i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy Email</span>
+                        </button>
                         <a class="contact-action button button-secondary" href="Resume/Ahmed_Mohammed_Saad_CV.pdf"
                             download="Ahmed_Mohammed_Saad_CV.pdf"><i class="fa-solid fa-download"
-                                aria-hidden="true"></i><span>Download Resume</span></a>
+                                aria-hidden="true"></i><span>Resume</span></a>
                     </div>
-                    <p class="contact-note">Fastest paths: email for formal opportunities, WhatsApp for quick follow-up.
+                    <p class="contact-note">Formal opportunity? Email is best. Fast coordination? WhatsApp is easiest.
                     </p>
                 </div>
                 <form id="contactForm" class="contact-form" data-formspree-endpoint="https://formspree.io/f/mvzdolrj"
                     aria-label="Contact form">
                     <!-- Honeypot field to prevent spam -->
                     <input type="text" name="_gotcha" style="display:none" aria-hidden="true">
-                    <p class="form-helper">Tell me what you need, your timeline, and the best way to reply. I usually
-                        respond within 24 hours.</p>
+                    <div class="form-heading">
+                        <p class="contact-eyebrow">Direct message</p>
+                        <h3>Send a focused note</h3>
+                    </div>
+                    <p class="form-helper">A few concrete details are enough: what you&apos;re building, why you need help,
+                        and when you want to start.</p>
 
                     <div class="field-wrap" data-stagger>
                         <div class="field-control">
@@ -598,7 +617,7 @@
                         <span class="field-msg" id="subjectMsg" aria-live="polite"></span>
                     </div>
 
-                    <div class="field-wrap" data-stagger>
+                    <div class="field-wrap field-wrap-message" data-stagger>
                         <div class="field-control">
                             <textarea id="message" name="message" rows="5" required autocomplete="off" placeholder=" "
                                 aria-describedby="messageHelp messageMsg"></textarea>
@@ -671,22 +690,6 @@
             <i class="fa-solid fa-download" aria-hidden="true"></i>
         </a>
     </nav>
-
-    <!-- Back to Top Button -->
-    <button class="back-to-top hidden" id="backToTop" type="button" aria-label="Scroll to top">
-        <i class="fa-solid fa-rocket" aria-hidden="true"></i>
-    </button>
-
-    <!-- Smart Section Navigation -->
-    <div class="section-nav-container" id="sectionNav">
-        <button class="nav-scroll-btn hidden" id="navUp" type="button" aria-label="Scroll to previous section">
-            <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
-        </button>
-        <button class="nav-scroll-btn" id="navDown" type="button" aria-label="Scroll to next section">
-            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-        </button>
-    </div>
-    
 
     <script src="Javascript/projects.js"></script>
     <script src="Javascript/main.js"></script>

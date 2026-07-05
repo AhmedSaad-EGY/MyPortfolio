@@ -18,6 +18,7 @@
   const cursorDot = document.getElementById("cursorDot");
   const cursorRing = document.getElementById("cursorRing");
   const codeRain = document.getElementById("codeRain");
+  const architectureBg = document.getElementById("architectureBg");
 
   // Store scroll/resize tasks to run in a unified loop
   const scrollTasks = [];
@@ -1667,6 +1668,234 @@
     });
   }
 
+  async function setupArchitectureBackground() {
+    if (!architectureBg || prefersReducedMotion) return;
+
+    const moduleUrls = [
+      "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+      "https://unpkg.com/three@0.165.0/build/three.module.js",
+    ];
+
+    let THREE = null;
+    for (const url of moduleUrls) {
+      try {
+        THREE = await import(url);
+        break;
+      } catch (_) {
+        THREE = null;
+      }
+    }
+
+    if (!THREE) {
+      architectureBg.classList.add("is-unavailable");
+      return;
+    }
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: architectureBg,
+      alpha: true,
+      antialias: true,
+      powerPreference: "low-power",
+    });
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
+    camera.position.set(0, 2.2, 16);
+
+    const root = new THREE.Group();
+    root.position.set(2.4, -0.35, 0);
+    scene.add(root);
+
+    function getColor(token, fallback) {
+      const value = getComputedStyle(document.documentElement)
+        .getPropertyValue(token)
+        .trim();
+      return new THREE.Color(value || fallback);
+    }
+
+    const accent = getColor("--accent-2", "#5fd0c6");
+    const warm = getColor("--accent", "#f2b35d");
+    const muted = getColor("--muted", "#a5adbb");
+
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: accent,
+      transparent: true,
+      opacity: 0.22,
+    });
+    const warmLineMaterial = new THREE.LineBasicMaterial({
+      color: warm,
+      transparent: true,
+      opacity: 0.18,
+    });
+    const pointMaterial = new THREE.PointsMaterial({
+      color: accent,
+      size: 0.055,
+      transparent: true,
+      opacity: 0.58,
+      depthWrite: false,
+    });
+
+    const grid = new THREE.GridHelper(28, 18, accent, muted);
+    grid.position.y = -4.2;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.12;
+    root.add(grid);
+
+    function setMaterialOpacity(material, opacity) {
+      if (Array.isArray(material)) {
+        material.forEach((item) => {
+          item.transparent = true;
+          item.opacity = opacity;
+        });
+        return;
+      }
+
+      material.transparent = true;
+      material.opacity = opacity;
+    }
+
+    function applyScenePalette() {
+      const isLightTheme =
+        document.documentElement.getAttribute("data-theme") === "light";
+      const accentColor = getColor("--accent-2", isLightTheme ? "#147d78" : "#5fd0c6");
+      const warmColor = getColor("--accent", isLightTheme ? "#b66b2a" : "#f2b35d");
+
+      lineMaterial.color.copy(accentColor);
+      warmLineMaterial.color.copy(warmColor);
+      pointMaterial.color.copy(accentColor);
+
+      lineMaterial.opacity = isLightTheme ? 0.36 : 0.22;
+      warmLineMaterial.opacity = isLightTheme ? 0.3 : 0.18;
+      pointMaterial.opacity = isLightTheme ? 0.78 : 0.58;
+      setMaterialOpacity(grid.material, isLightTheme ? 0.2 : 0.12);
+    }
+
+    const nodePositions = [];
+    for (let i = 0; i < 68; i += 1) {
+      const angle = i * 2.39996;
+      const radius = 2.7 + (i % 9) * 0.82;
+      const x = Math.cos(angle) * radius;
+      const y = ((i * 37) % 95) / 95 * 7.4 - 2.1;
+      const z = Math.sin(angle) * radius - ((i % 5) * 1.2);
+      nodePositions.push(x, y, z);
+    }
+
+    const pointGeometry = new THREE.BufferGeometry();
+    pointGeometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(nodePositions, 3),
+    );
+    const points = new THREE.Points(pointGeometry, pointMaterial);
+    root.add(points);
+
+    const connectorPositions = [];
+    for (let i = 0; i < nodePositions.length / 3; i += 1) {
+      const from = i * 3;
+      const to = ((i + 7) % (nodePositions.length / 3)) * 3;
+      const second = ((i + 19) % (nodePositions.length / 3)) * 3;
+      connectorPositions.push(
+        nodePositions[from],
+        nodePositions[from + 1],
+        nodePositions[from + 2],
+        nodePositions[to],
+        nodePositions[to + 1],
+        nodePositions[to + 2],
+      );
+
+      if (i % 3 === 0) {
+        connectorPositions.push(
+          nodePositions[from],
+          nodePositions[from + 1],
+          nodePositions[from + 2],
+          nodePositions[second],
+          nodePositions[second + 1],
+          nodePositions[second + 2],
+        );
+      }
+    }
+
+    const connectorGeometry = new THREE.BufferGeometry();
+    connectorGeometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(connectorPositions, 3),
+    );
+    root.add(new THREE.LineSegments(connectorGeometry, lineMaterial));
+
+    const blockGroup = new THREE.Group();
+    const blockGeometry = new THREE.BoxGeometry(1.7, 0.72, 1.04);
+    [
+      [-4.4, 0.7, 1.8],
+      [-1.5, 2.1, -1.2],
+      [1.8, 0.45, 0.6],
+      [4.5, 2.5, -2.5],
+      [-3.1, -1.2, -3.6],
+      [3.2, -1.5, -0.9],
+    ].forEach((position, index) => {
+      const edges = new THREE.EdgesGeometry(blockGeometry);
+      const material = index % 2 === 0 ? warmLineMaterial : lineMaterial;
+      const block = new THREE.LineSegments(edges, material);
+      block.position.set(position[0], position[1], position[2]);
+      block.rotation.y = index * 0.27;
+      block.rotation.x = -0.08;
+      blockGroup.add(block);
+    });
+    root.add(blockGroup);
+
+    applyScenePalette();
+
+    const themeObserver = new MutationObserver((mutations) => {
+      if (mutations.some((mutation) => mutation.attributeName === "data-theme")) {
+        applyScenePalette();
+      }
+    });
+    themeObserver.observe(document.documentElement, { attributes: true });
+
+    const pointer = { x: 0, y: 0 };
+    let rafId = 0;
+
+    function resize() {
+      const width = Math.max(window.innerWidth, 320);
+      const height = Math.max(window.innerHeight, 320);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
+
+    function animate(time) {
+      const seconds = time * 0.001;
+      const scrollOffset = (window.scrollY || window.pageYOffset || 0) * 0.00035;
+      root.rotation.y = -0.16 + seconds * 0.035 + pointer.x * 0.08;
+      root.rotation.x = -0.08 + pointer.y * 0.035 + scrollOffset;
+      points.rotation.y = seconds * 0.022;
+      blockGroup.rotation.y = seconds * -0.018;
+      renderer.render(scene, camera);
+      rafId = window.requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener(
+      "pointermove",
+      (event) => {
+        pointer.x = (event.clientX / window.innerWidth - 0.5) * 2;
+        pointer.y = (event.clientY / window.innerHeight - 0.5) * 2;
+      },
+      { passive: true },
+    );
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      } else if (!document.hidden && !rafId) {
+        rafId = window.requestAnimationFrame(animate);
+      }
+    });
+
+    resize();
+    rafId = window.requestAnimationFrame(animate);
+  }
+
   // --- Init ---
   renderProjects();
   initScrollManager();
@@ -1674,16 +1903,9 @@
   trackActiveSection();
   setupContactForm();
   setupThemeToggle();
-  setupHeroParallax();
-  setupProject3D();
-  setupAvatar3D();
+  setupArchitectureBackground();
   setupOutcomeCounters();
-  setupCodeRain();
-  setupCursorTracker();
-  setupSectionNavigation();
   setupCopyEmail();
-  setupClickSounds();
   setupMobileHaptics();
-  setupBackToTop();
   registerRevealElements(document);
 })();
