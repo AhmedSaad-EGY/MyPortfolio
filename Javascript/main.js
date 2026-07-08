@@ -78,6 +78,101 @@
     );
   }
 
+  function setupTypingHeadings() {
+    const headings = Array.from(document.querySelectorAll(".section-heading h2"));
+
+    headings.forEach((heading) => {
+      if (heading.dataset.typingReady === "true") return;
+
+      const headingText = heading.textContent.trim();
+      if (!headingText) return;
+
+      heading.dataset.typingReady = "true";
+      heading.dataset.typingText = headingText;
+      heading.setAttribute("aria-label", headingText);
+      heading.classList.add("typing-heading");
+      heading.style.setProperty("--typing-characters", headingText.length);
+
+      if (prefersReducedMotion) {
+        heading.classList.add("typing-complete");
+        return;
+      }
+
+      heading.textContent = "";
+
+      const textSpan = document.createElement("span");
+      textSpan.className = "typing-text";
+      textSpan.setAttribute("aria-hidden", "true");
+
+      const cursorSpan = document.createElement("span");
+      cursorSpan.className = "typing-cursor";
+      cursorSpan.setAttribute("aria-hidden", "true");
+
+      heading.append(textSpan, cursorSpan);
+    });
+  }
+
+  function runHeadingTyping(root) {
+    if (prefersReducedMotion) return;
+
+    const headings = [];
+
+    if (root && root.matches && root.matches(".typing-heading")) {
+      headings.push(root);
+    }
+
+    if (root && root.querySelectorAll) {
+      headings.push(...root.querySelectorAll(".typing-heading"));
+    }
+
+    headings.forEach((heading) => {
+      if (heading.dataset.typingLooping === "true") return;
+
+      const headingText = heading.dataset.typingText || "";
+      const textSpan = heading.querySelector(".typing-text");
+      if (!headingText || !textSpan) return;
+
+      heading.dataset.typingLooping = "true";
+      heading.classList.add("typing-active");
+
+      const stepDuration = Math.max(
+        42,
+        Math.min(78, Math.round(1180 / headingText.length)),
+      );
+      const eraseDuration = Math.max(28, Math.round(stepDuration * 0.55));
+      const holdDuration = 1800;
+      const restartDuration = 520;
+
+      function typeNextCharacter(characterIndex = 0) {
+        characterIndex += 1;
+        heading.classList.remove("typing-erasing");
+        textSpan.textContent = headingText.slice(0, characterIndex);
+
+        if (characterIndex < headingText.length) {
+          window.setTimeout(() => typeNextCharacter(characterIndex), stepDuration);
+          return;
+        }
+
+        window.setTimeout(() => erasePreviousCharacter(headingText.length), holdDuration);
+      }
+
+      function erasePreviousCharacter(characterIndex) {
+        characterIndex -= 1;
+        heading.classList.add("typing-erasing");
+        textSpan.textContent = headingText.slice(0, characterIndex);
+
+        if (characterIndex > 0) {
+          window.setTimeout(() => erasePreviousCharacter(characterIndex), eraseDuration);
+          return;
+        }
+
+        window.setTimeout(() => typeNextCharacter(0), restartDuration);
+      }
+
+      window.setTimeout(() => typeNextCharacter(0), 120);
+    });
+  }
+
   // --- Navigation UI ---
   function closeNavMenu() {
     if (!menuToggle || !primaryNav) return;
@@ -99,6 +194,11 @@
         isOpen ? "Close navigation menu" : "Open navigation menu",
       );
       document.body.classList.toggle("nav-open", isOpen);
+
+      if (isOpen) {
+        const firstNavLink = primaryNav.querySelector("a");
+        window.setTimeout(() => firstNavLink?.focus({ preventScroll: true }), 120);
+      }
     });
 
     navLinks.forEach(function (link) {
@@ -107,6 +207,17 @@
 
     primaryNav.addEventListener("click", function (event) {
       if (event.target === primaryNav) {
+        closeNavMenu();
+      }
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!primaryNav.classList.contains("open")) return;
+
+      const clickedInsideNav = primaryNav.contains(event.target);
+      const clickedToggle = menuToggle.contains(event.target);
+
+      if (!clickedInsideNav && !clickedToggle) {
         closeNavMenu();
       }
     });
@@ -130,6 +241,7 @@
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape") {
         closeNavMenu();
+        menuToggle.focus({ preventScroll: true });
       }
     });
   }
@@ -138,6 +250,8 @@
   function applyRevealState(element) {
     element.classList.add("in-view");
     const animationName = String(element.dataset.animate || "").trim();
+
+    runHeadingTyping(element);
 
     if (!animationName) return;
     element.classList.add("animate__animated", animationName);
@@ -156,7 +270,6 @@
       item.style.setProperty("--stagger-delay", idx * 110 + "ms");
       item.classList.add("stagger-in");
     });
-
   }
 
   const revealObserver =
@@ -1244,21 +1357,19 @@
         "null",
         "true",
         "false",
-        "public",
-        "private",
-        "C#",
-        ".NET",
-        "API",
-        "JWT",
-        "SQL",
-        "SELECT",
-        "JOIN",
-        "MVC",
-        "EF Core",
-        "[HttpGet]",
-        "[HttpPost]",
-        "POST",
-        "GET",
+        "state",
+        "props",
+        "route",
+        "cache",
+        "query",
+        "merge",
+        "branch",
+        "deploy",
+        "test",
+        "build",
+        "lint",
+        "schema",
+        "queue",
         "<div>",
         "0011010",
         "1011001",
@@ -1668,211 +1779,187 @@
     });
   }
 
-  async function setupArchitectureBackground() {
+  function setupArchitectureBackground() {
     if (!architectureBg || prefersReducedMotion) return;
 
-    const moduleUrls = [
-      "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
-      "https://unpkg.com/three@0.165.0/build/three.module.js",
-    ];
-
-    let THREE = null;
-    for (const url of moduleUrls) {
-      try {
-        THREE = await import(url);
-        break;
-      } catch (_) {
-        THREE = null;
-      }
-    }
-
-    if (!THREE) {
-      architectureBg.classList.add("is-unavailable");
-      return;
-    }
-
-    const renderer = new THREE.WebGLRenderer({
-      canvas: architectureBg,
-      alpha: true,
-      antialias: true,
-      powerPreference: "low-power",
-    });
-    renderer.setClearColor(0x000000, 0);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
-    camera.position.set(0, 2.2, 16);
-
-    const root = new THREE.Group();
-    root.position.set(2.4, -0.35, 0);
-    scene.add(root);
+    const ctx = architectureBg.getContext("2d", { alpha: true });
+    if (!ctx) return;
 
     function getColor(token, fallback) {
-      const value = getComputedStyle(document.documentElement)
+      return getComputedStyle(document.documentElement)
         .getPropertyValue(token)
-        .trim();
-      return new THREE.Color(value || fallback);
+        .trim() || fallback;
     }
 
-    const accent = getColor("--accent-2", "#5fd0c6");
-    const warm = getColor("--accent", "#f2b35d");
-    const muted = getColor("--muted", "#a5adbb");
-
-    const lineMaterial = new THREE.LineBasicMaterial({
-      color: accent,
-      transparent: true,
-      opacity: 0.22,
-    });
-    const warmLineMaterial = new THREE.LineBasicMaterial({
-      color: warm,
-      transparent: true,
-      opacity: 0.18,
-    });
-    const pointMaterial = new THREE.PointsMaterial({
-      color: accent,
-      size: 0.055,
-      transparent: true,
-      opacity: 0.58,
-      depthWrite: false,
-    });
-
-    const grid = new THREE.GridHelper(28, 18, accent, muted);
-    grid.position.y = -4.2;
-    grid.material.transparent = true;
-    grid.material.opacity = 0.12;
-    root.add(grid);
-
-    function setMaterialOpacity(material, opacity) {
-      if (Array.isArray(material)) {
-        material.forEach((item) => {
-          item.transparent = true;
-          item.opacity = opacity;
-        });
-        return;
-      }
-
-      material.transparent = true;
-      material.opacity = opacity;
-    }
-
-    function applyScenePalette() {
-      const isLightTheme =
-        document.documentElement.getAttribute("data-theme") === "light";
-      const accentColor = getColor("--accent-2", isLightTheme ? "#147d78" : "#5fd0c6");
-      const warmColor = getColor("--accent", isLightTheme ? "#b66b2a" : "#f2b35d");
-
-      lineMaterial.color.copy(accentColor);
-      warmLineMaterial.color.copy(warmColor);
-      pointMaterial.color.copy(accentColor);
-
-      lineMaterial.opacity = isLightTheme ? 0.36 : 0.22;
-      warmLineMaterial.opacity = isLightTheme ? 0.3 : 0.18;
-      pointMaterial.opacity = isLightTheme ? 0.78 : 0.58;
-      setMaterialOpacity(grid.material, isLightTheme ? 0.2 : 0.12);
-    }
-
-    const nodePositions = [];
-    for (let i = 0; i < 68; i += 1) {
-      const angle = i * 2.39996;
-      const radius = 2.7 + (i % 9) * 0.82;
-      const x = Math.cos(angle) * radius;
-      const y = ((i * 37) % 95) / 95 * 7.4 - 2.1;
-      const z = Math.sin(angle) * radius - ((i % 5) * 1.2);
-      nodePositions.push(x, y, z);
-    }
-
-    const pointGeometry = new THREE.BufferGeometry();
-    pointGeometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(nodePositions, 3),
-    );
-    const points = new THREE.Points(pointGeometry, pointMaterial);
-    root.add(points);
-
-    const connectorPositions = [];
-    for (let i = 0; i < nodePositions.length / 3; i += 1) {
-      const from = i * 3;
-      const to = ((i + 7) % (nodePositions.length / 3)) * 3;
-      const second = ((i + 19) % (nodePositions.length / 3)) * 3;
-      connectorPositions.push(
-        nodePositions[from],
-        nodePositions[from + 1],
-        nodePositions[from + 2],
-        nodePositions[to],
-        nodePositions[to + 1],
-        nodePositions[to + 2],
-      );
-
-      if (i % 3 === 0) {
-        connectorPositions.push(
-          nodePositions[from],
-          nodePositions[from + 1],
-          nodePositions[from + 2],
-          nodePositions[second],
-          nodePositions[second + 1],
-          nodePositions[second + 2],
-        );
-      }
-    }
-
-    const connectorGeometry = new THREE.BufferGeometry();
-    connectorGeometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(connectorPositions, 3),
-    );
-    root.add(new THREE.LineSegments(connectorGeometry, lineMaterial));
-
-    const blockGroup = new THREE.Group();
-    const blockGeometry = new THREE.BoxGeometry(1.7, 0.72, 1.04);
-    [
-      [-4.4, 0.7, 1.8],
-      [-1.5, 2.1, -1.2],
-      [1.8, 0.45, 0.6],
-      [4.5, 2.5, -2.5],
-      [-3.1, -1.2, -3.6],
-      [3.2, -1.5, -0.9],
-    ].forEach((position, index) => {
-      const edges = new THREE.EdgesGeometry(blockGeometry);
-      const material = index % 2 === 0 ? warmLineMaterial : lineMaterial;
-      const block = new THREE.LineSegments(edges, material);
-      block.position.set(position[0], position[1], position[2]);
-      block.rotation.y = index * 0.27;
-      block.rotation.x = -0.08;
-      blockGroup.add(block);
-    });
-    root.add(blockGroup);
-
-    applyScenePalette();
-
-    const themeObserver = new MutationObserver((mutations) => {
-      if (mutations.some((mutation) => mutation.attributeName === "data-theme")) {
-        applyScenePalette();
-      }
-    });
-    themeObserver.observe(document.documentElement, { attributes: true });
+    const nodes = [
+      { id: "n1", x: 0.1, y: 0.26, weight: 0.78, phase: 0.4 },
+      { id: "n2", x: 0.22, y: 0.5, weight: 0.92, phase: 1.6 },
+      { id: "n3", x: 0.34, y: 0.32, weight: 1.18, phase: 2.2 },
+      { id: "n4", x: 0.47, y: 0.58, weight: 0.84, phase: 0.9 },
+      { id: "n5", x: 0.58, y: 0.37, weight: 1.28, phase: 2.9 },
+      { id: "n6", x: 0.72, y: 0.22, weight: 0.72, phase: 1.1 },
+      { id: "n7", x: 0.78, y: 0.55, weight: 1.06, phase: 3.4 },
+      { id: "n8", x: 0.92, y: 0.4, weight: 0.82, phase: 2.5 },
+      { id: "n9", x: 0.64, y: 0.75, weight: 0.68, phase: 1.9 },
+      { id: "n10", x: 0.18, y: 0.78, weight: 0.62, phase: 3.1 },
+    ];
+    const connections = [
+      ["n1", "n3"],
+      ["n2", "n3"],
+      ["n2", "n4"],
+      ["n3", "n5"],
+      ["n4", "n5"],
+      ["n4", "n9"],
+      ["n5", "n6"],
+      ["n5", "n7"],
+      ["n6", "n8"],
+      ["n7", "n8"],
+      ["n7", "n9"],
+      ["n2", "n10"],
+    ];
 
     const pointer = { x: 0, y: 0 };
+    let canvasWidth = 0;
+    let canvasHeight = 0;
     let rafId = 0;
 
     function resize() {
       const width = Math.max(window.innerWidth, 320);
       const height = Math.max(window.innerHeight, 320);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.8);
+      canvasWidth = width;
+      canvasHeight = height;
+      architectureBg.width = Math.round(width * pixelRatio);
+      architectureBg.height = Math.round(height * pixelRatio);
+      architectureBg.style.width = width + "px";
+      architectureBg.style.height = height + "px";
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     }
 
-    function animate(time) {
-      const seconds = time * 0.001;
-      const scrollOffset = (window.scrollY || window.pageYOffset || 0) * 0.00035;
-      root.rotation.y = -0.16 + seconds * 0.035 + pointer.x * 0.08;
-      root.rotation.x = -0.08 + pointer.y * 0.035 + scrollOffset;
-      points.rotation.y = seconds * 0.022;
-      blockGroup.rotation.y = seconds * -0.018;
-      renderer.render(scene, camera);
-      rafId = window.requestAnimationFrame(animate);
+    function project(node, seconds) {
+      const driftX = Math.sin(seconds * 0.38 + node.phase) * 8 * node.weight;
+      const driftY = Math.cos(seconds * 0.32 + node.phase * 1.4) * 6 * node.weight;
+      const pointerShiftX = pointer.x * 8 * node.weight;
+      const pointerShiftY = pointer.y * 5 * node.weight;
+      return {
+        x: node.x * canvasWidth + driftX + pointerShiftX,
+        y: node.y * canvasHeight + driftY + pointerShiftY,
+      };
     }
+
+    function getCurvePoint(start, control, end, progress) {
+      const inverse = 1 - progress;
+      return {
+        x:
+          inverse * inverse * start.x +
+          2 * inverse * progress * control.x +
+          progress * progress * end.x,
+        y:
+          inverse * inverse * start.y +
+          2 * inverse * progress * control.y +
+          progress * progress * end.y,
+      };
+    }
+
+    function drawConnection(start, end, accent, warm, progress, index, opacityScale) {
+      const controlX = (start.x + end.x) / 2;
+      const controlY =
+        (start.y + end.y) / 2 -
+        Math.abs(end.x - start.x) * (index % 2 === 0 ? 0.08 : -0.08);
+      const control = { x: controlX, y: controlY };
+
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.quadraticCurveTo(controlX, controlY, end.x, end.y);
+      ctx.strokeStyle = accent;
+      ctx.globalAlpha = 0.16 * opacityScale;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      const pulse = getCurvePoint(start, control, end, progress);
+      const pulseLead = getCurvePoint(start, control, end, Math.min(progress + 0.08, 1));
+
+      ctx.beginPath();
+      ctx.moveTo(pulse.x, pulse.y);
+      ctx.lineTo(pulseLead.x, pulseLead.y);
+      ctx.strokeStyle = warm;
+      ctx.globalAlpha = 0.58 * opacityScale;
+      ctx.lineWidth = 2.1;
+      ctx.stroke();
+    }
+
+    function drawNode(node, point, accent, warm, opacityScale) {
+      const radius = 2.8 + node.weight * 2.2;
+      const ringRadius = 14 + node.weight * 17;
+      const isPrimary = node.weight > 1;
+      const glow = isPrimary ? warm : accent;
+
+      ctx.globalAlpha = (isPrimary ? 0.16 : 0.1) * opacityScale;
+      ctx.strokeStyle = glow;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, ringRadius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.globalAlpha = (isPrimary ? 0.72 : 0.52) * opacityScale;
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.globalAlpha = 0.32 * opacityScale;
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, Math.max(radius - 2, 1.8), 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function render(time) {
+      const seconds = time * 0.001;
+      const isLightTheme =
+        document.documentElement.getAttribute("data-theme") === "light";
+      const accent = getColor("--accent-2", isLightTheme ? "#147d78" : "#5fd0c6");
+      const warm = getColor("--accent", isLightTheme ? "#b66b2a" : "#f2b35d");
+      const visibleNodes =
+        canvasWidth < 640
+          ? nodes.filter((node, index) => node.weight >= 0.9 || index % 2 === 0)
+          : nodes;
+      const visibleNodeIds = new Set(visibleNodes.map((node) => node.id));
+      const positionMap = new Map(
+        visibleNodes.map((node) => [node.id, project(node, seconds)]),
+      );
+      const opacityScale = canvasWidth < 760 ? 0.72 : 1;
+
+      ctx.globalAlpha = 1;
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      connections.forEach(([fromId, toId], index) => {
+        if (!visibleNodeIds.has(fromId) || !visibleNodeIds.has(toId)) return;
+
+        const start = positionMap.get(fromId);
+        const end = positionMap.get(toId);
+        const progress = (seconds * 0.12 + index * 0.11) % 1;
+        drawConnection(start, end, accent, warm, progress, index, opacityScale);
+      });
+
+      visibleNodes.forEach((node) => {
+        drawNode(node, positionMap.get(node.id), accent, warm, opacityScale);
+      });
+    }
+
+    function draw(time) {
+      render(time);
+      rafId = window.requestAnimationFrame(draw);
+    }
+
+    const themeObserver = new MutationObserver((mutations) => {
+      if (mutations.some((mutation) => mutation.attributeName === "data-theme")) {
+        render(performance.now());
+      }
+    });
+    themeObserver.observe(document.documentElement, { attributes: true });
 
     window.addEventListener("resize", resize, { passive: true });
     window.addEventListener(
@@ -1888,16 +1975,17 @@
         window.cancelAnimationFrame(rafId);
         rafId = 0;
       } else if (!document.hidden && !rafId) {
-        rafId = window.requestAnimationFrame(animate);
+        rafId = window.requestAnimationFrame(draw);
       }
     });
 
     resize();
-    rafId = window.requestAnimationFrame(animate);
+    rafId = window.requestAnimationFrame(draw);
   }
 
   // --- Init ---
   renderProjects();
+  setupTypingHeadings();
   initScrollManager();
   setupScrollProgress();
   trackActiveSection();
