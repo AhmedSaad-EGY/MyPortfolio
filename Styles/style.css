@@ -3353,6 +3353,11 @@ h2 {
         --header-offset: 88px;
     }
 
+    .site-header {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
     body.nav-open {
         overflow: hidden;
     }
@@ -3379,35 +3384,44 @@ h2 {
         z-index: 1200;
     }
 
+    body.nav-open .menu-toggle {
+        position: fixed;
+        top: calc(10px + env(safe-area-inset-top));
+        right: calc(12px + env(safe-area-inset-right));
+    }
+
     .site-nav {
         position: fixed;
         top: 0;
         right: 0;
         bottom: 0;
         left: auto;
-        width: 0;
-        max-width: 0;
+        width: min(84vw, 360px);
+        max-width: calc(100vw - 12px);
         height: 100dvh;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         overscroll-behavior: contain;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
         gap: 14px;
         min-width: 0;
-        padding: 0;
+        padding: max(70px, 8vh) 22px max(34px, calc(24px + env(safe-area-inset-bottom)));
         border-radius: 18px 0 0 18px;
-        border: 0 solid var(--panel-border);
+        border: 1px solid var(--panel-border);
         background: linear-gradient(160deg, rgba(68, 212, 255, 0.1), rgba(255, 159, 68, 0.08) 34%, var(--mobile-nav-deep) 76%), var(--mobile-nav-bg);
         backdrop-filter: blur(18px);
-        box-shadow: none;
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transform: translateX(0);
-        transition: opacity 0.32s ease, transform 0.32s ease, visibility 0.32s ease;
+        transform: translateX(calc(100% + 16px));
+        transition: opacity 0.24s ease, transform 0.28s ease, visibility 0s linear 0.28s;
         z-index: 1100;
         box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
     }
 
     .nav-group-label {
@@ -3442,20 +3456,11 @@ h2 {
     }
 
     .site-nav.open {
-        width: min(84vw, 360px);
-        max-width: calc(100vw - 12px);
-        overflow-y: auto;
-        padding: max(70px, 8vh) 22px max(34px, calc(24px + env(safe-area-inset-bottom)));
-        border-width: 1px;
-        box-shadow: var(--shadow);
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
         transform: translateX(0);
-    }
-
-    .site-nav:not(.open)>* {
-        display: none;
+        transition-delay: 0s;
     }
 
     .nav-active-pill {
@@ -3563,7 +3568,7 @@ h2 {
         text-align: center;
     }
 
-    .site-nav.open {
+    .site-nav {
         width: min(90vw, 320px);
         max-width: calc(100vw - 12px);
         padding: max(64px, 8vh) 18px max(34px, calc(24px + env(safe-area-inset-bottom)));
